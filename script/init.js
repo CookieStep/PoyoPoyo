@@ -12,6 +12,7 @@ var {
 	floor,
 	round,
 	ceil,
+	abs,
 	PI
 } = Math;
 

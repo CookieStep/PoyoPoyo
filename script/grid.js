@@ -32,7 +32,7 @@ var Grid = {
 		do{
 			attach = false;
 			moved = new Set;
-			blobs = blobs.filter(blob => !blob.inactive);
+			await Inactive();
 			do{
 				fall = false;
 				let mov = new Set;
@@ -49,28 +49,28 @@ var Grid = {
 						}
 					}
 				}
-				if(fall) for(let i = 0; i < 10; i++) {
+				if(fall) for(let i = 0; i < 5; i++) {
 					ctx.clear();
 					for(let blob of mov) {
-						blob.y += .1;
+						blob.y += .2;
 					}
 					for(let blob of blobs) blob.draw();
-					await delay(10);
+					await delay(1);
 				}
 			}while(fall);
+			var poof;
 			for(let blob of moved) {
 				blob.y = round(blob.y);
-				blob.settle();
-				attach = true;ddd
+				blob.settle() && (poof = true);
+				attach = true;
 			}
-			ctx.clear();
-			for(let blob of blobs) blob.draw();
-			if(moved.size) {
+			drawBlobs();
+			if(poof) {
 				await delay(100);
 				console.log("Poof");
-				update.lastFrame = Date.now();
 			}
 		}while(attach);
+		update.lastFrame = Date.now();
 	},
 	/**@returns {Blob}*/
 	get(x, y) {

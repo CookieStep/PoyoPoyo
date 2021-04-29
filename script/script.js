@@ -31,17 +31,35 @@ async function update() {
 			gameTime += deltaTime;
 		}
 		update.lastFrame = time;
-		ctx.clear();
 		var len = blobs.length;
 		for(let b = 0; b < len; b++) {
 			blob = blobs[b];
 			blob.update();
 		}
-		blobs = blobs.filter(blob => !blob.inactive);
 		await Grid.fall();
 		await delay(10);
 	}
 }
+async function Inactive() {
+	var gone = blobs.filter(blob => blob.inactive);
+	if(gone.length) {
+		console.log(gone);
+		// var loops = 1;
+		var itera = 20;
+		for(let i = 0; i < 10; i++) {
+			for(let blob of gone) {
+				blob.dead = 1 - abs((i % itera) - itera/2)/itera * 2;
+			}
+			drawBlobs();
+			await delay(1);
+		}
+	}
+	blobs = blobs.filter(blob => !blob.inactive);
+}
+function drawBlobs() {
+	ctx.clear();
+	for(let blob of blobs) blob.draw();
+};
 function resize() {
 	assign(canvas, {
 		width: innerWidth,

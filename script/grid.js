@@ -8,9 +8,7 @@ var Grid = {
 		array[y * height + x] = blob;
 
 		blob.settle();
-		
-		blob = new Blob(Color.next());
-		if(blob.y >= Grid.lowest(blob.x)) blobs.pop();
+		mainBlob = false;
 	},
 	lowest(x) {
 		for(var y = Grid.height - 1; y >= 0; --y) {
@@ -50,11 +48,10 @@ var Grid = {
 					}
 				}
 				if(fall) for(let i = 0; i < 5; i++) {
-					ctx.clear();
 					for(let blob of mov) {
 						blob.y += .2;
 					}
-					for(let blob of blobs) blob.draw();
+					drawBlobs();
 					await delay(1);
 				}
 			}while(fall);

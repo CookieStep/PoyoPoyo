@@ -16,14 +16,16 @@ var {
 	PI
 } = Math;
 
+var Falling;
+
 const Color = {
 	/**@readonly*/
 	code: [
 		"#faa",
 		"#aaf",
 		"#afa",
-		"#ffa",
-		"#faf"
+		"#faf",
+		"#ffa"
 	],
 	/**@readonly*/
 	red: 0,
@@ -32,11 +34,11 @@ const Color = {
 	/**@readonly*/
 	green: 2,
 	/**@readonly*/
-	yellow: 3,
+	purple: 3,
 	/**@readonly*/
-	purple: 4,
+	// yellow: 4,
 	/**@readonly*/
-	all: [0, 1, 2, 3, 4],
+	all: [0, 1, 2, 3],
 	next() {
 		var {list} = this;
 
@@ -44,7 +46,7 @@ const Color = {
 			for(let color of this.all) {
 				for(let i = 0; i < 12; i++) list.push(color);
 			}
-			list.sort((a, b) => random() - .5);
+			list.sort(() => random() - .5);
 			console.log(list);
 		}
 

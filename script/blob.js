@@ -17,7 +17,18 @@ class Blob{
 			.set("shape", shapes.get("square-2"))
 			.link("fill", () => `rgba(255, 255, 255, ${this.dead})`)
 		);
+		this.bottom = (new Texture()
+			.set("h", 1)
+			.set("w", 1)
+			.use(this)
+				.for("x")
+			.set("shape", shapes.get("square-2"))
+			.link("y", () => Grid.lowest(this.x))
+			.link("fill", () => Color.code[this.color] + "a")
+			.set("stroke", "#000")
+		);
 		this.x = round(Grid.width/2);
+		mainBlob = this;
 		blobs.push(this);
 	}
 	check(n=this.x) {
@@ -60,7 +71,7 @@ class Blob{
 			group.delete(this);
 		}
 	}
-	update() {
+	async update() {
 		if(this.active) {
 			if(keys.multi("KeyD") && this.check(this.x + 1)) ++this.x;
 			if(keys.multi("ArrowRight") && this.check(this.x + 1)) ++this.x;
@@ -80,7 +91,8 @@ class Blob{
 	}
 	draw() {
 		this.texture.draw();
-		this.glow.draw();
+		if(this.dead) this.glow.draw();
+		if(!Falling && this.active) this.bottom.draw();
 	}
 
 	active = true;
@@ -91,3 +103,4 @@ class Blob{
 	fall = 0;
 	dead = 0;
 }
+var mainBlob;

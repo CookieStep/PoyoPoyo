@@ -15,7 +15,6 @@ var keys = new function KeyMap() {
 function start() {
 	document.body.appendChild(canvas);
 	resize();
-	new Blob(Color.blue);
 	update();
 }
 var blobDownHandler = {
@@ -31,10 +30,15 @@ async function update() {
 			gameTime += deltaTime;
 		}
 		update.lastFrame = time;
+		if(!mainBlob) new Blob(Color.next());
+		if(mainBlob.y >= Grid.lowest(mainBlob.x)) {
+			blobs.pop();
+			mainBlob = undefined;
+		}
 		var len = blobs.length;
 		for(let b = 0; b < len; b++) {
 			blob = blobs[b];
-			blob.update();
+			await blob.update();
 		}
 		await Grid.fall();
 		await delay(10);
@@ -45,8 +49,8 @@ async function Inactive() {
 	if(gone.length) {
 		console.log(gone);
 		// var loops = 1;
-		var itera = 20;
-		for(let i = 0; i < 10; i++) {
+		var itera = 40;
+		for(let i = 0; i < 20; i++) {
 			for(let blob of gone) {
 				blob.dead = 1 - abs((i % itera) - itera/2)/itera * 2;
 			}
@@ -58,6 +62,10 @@ async function Inactive() {
 }
 function drawBlobs() {
 	ctx.clear();
+	var x = Grid.width * scale + 1
+	ctx.moveTo(x, 0);
+	ctx.lineTo(x, innerHeight);
+	ctx.stroke();
 	for(let blob of blobs) blob.draw();
 };
 function resize() {

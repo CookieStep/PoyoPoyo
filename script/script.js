@@ -21,29 +21,33 @@ function start() {
 var blobDownHandler = {
 	update() {}
 }
+ctx.clear = () => ctx.clearRect(0, 0, innerWidth, innerHeight);;
 async function update() {
-	var time = Date.now();
-	var {lastFrame} = update;
-	if(lastFrame) {
-		deltaTime = time - lastFrame;
-		gameTime += deltaTime;
+	while(true) {
+		var time = Date.now();
+		var {lastFrame} = update;
+		if(lastFrame) {
+			deltaTime = time - lastFrame;
+			gameTime += deltaTime;
+		}
+		update.lastFrame = time;
+		ctx.clear();
+		var len = blobs.length;
+		for(let b = 0; b < len; b++) {
+			blob = blobs[b];
+			blob.update();
+		}
+		blobs = blobs.filter(blob => !blob.inactive);
+		await Grid.fall();
+		await delay(10);
 	}
-	update.lastFrame = time;
-	ctx.clearRect(0, 0, innerWidth, innerHeight);
-	var len = blobs.length;
-	for(let b = 0; b < len; b++) {
-		blob = blobs[b];
-		blob.update();
-	}
-	blobs = blobs.filter(blob => !blob.inactive);
-	await Grid.fall();
-	requestAnimationFrame(update);
 }
 function resize() {
 	assign(canvas, {
 		width: innerWidth,
 		height: innerHeight
 	});
+	scale = innerHeight/Grid.height;
 }
 
 addEventListener("keydown", ({code}) => keys.press(code));

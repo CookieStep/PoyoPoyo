@@ -35,7 +35,21 @@ const Color = {
 	/**@readonly*/
 	purple: 4,
 	/**@readonly*/
-	all: [0, 1, 2, 3, 4]
+	all: [0, 1, 2, 3, 4],
+	next() {
+		var {list} = this;
+
+		if(!list.length) {
+			for(let color of this.all) {
+				for(let i = 0; i < 12; i++) list.push(color);
+			}
+			list.sort((a, b) => random() - .5);
+			console.log(list);
+		}
+
+		return list.pop();
+	},
+	list: []
 }
 
 var delay = time => new Promise(resolve => setTimeout(resolve, time));

@@ -17,6 +17,12 @@ function Sound(name) {
                 else sound.play();
             }
         },
+        volume(n) {
+            try{
+                sound.volume += n;
+                soundH.volume += n;
+            }catch(_) {}
+        },
         async switch(H) {
             if(H == pH) return;
             console.log("switch");

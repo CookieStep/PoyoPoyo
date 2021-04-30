@@ -7,6 +7,7 @@ var {
 
 var deltaTime = 0;
 var gameTime = 0;
+var ticks = 0;
 var {
 	random,
 	floor,

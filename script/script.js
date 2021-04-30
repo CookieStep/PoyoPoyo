@@ -17,7 +17,7 @@ function start() {
 	resize();
 	update();
 }
-ctx.clear = () => ctx.clearRect(0, 0, innerWidth, innerHeight);;
+ctx.clear = () => ctx.clearRect(0, 0, innerWidth, innerHeight);
 async function update() {
 	await new Promise(resolve => addEventListener("mousedown", resolve));
 	while(true) {
@@ -28,6 +28,7 @@ async function update() {
 			gameTime += deltaTime;
 		}
 		update.lastFrame = time;
+		if(++ticks % 1000 == 0) resize();
 		music();
 		if(!mainBlob) new Blob(Color.next());
 		if(mainBlob.y >= Grid.lowest(mainBlob.x)) {
@@ -91,6 +92,10 @@ function resize() {
 
 addEventListener("keydown", ({code}) => keys.press(code));
 addEventListener("keyup", ({code}) => keys.release(code));
+addEventListener("keydown", ({code}) => {
+	if(code == "Minus") songs.forEach(song => song.volume(-.1));
+	if(code == "Equal") songs.forEach(song => song.volume(.1));
+});
 addEventListener("focus", () => update.lastFrame = Date.now());
 addEventListener("resize", resize);
 addEventListener("load", start);

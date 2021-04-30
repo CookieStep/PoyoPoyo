@@ -107,7 +107,7 @@ var Grid = {
 	// },
 	width: 6,
 	height: 15,
-	canvas: new OffscreenCanvas(100, 100),
+	canvas: document.createElement("canvas"),
 	array: []
 }
 Grid.ctx = Grid.canvas.getContext("2d");

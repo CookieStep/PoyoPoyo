@@ -2,8 +2,8 @@ function Sound(name) {
     var sound = new Audio(`songs/${name}.mp3`);
     var soundH = new Audio(`songs/${name}-H.mp3`);
 
-    sound.loop = true;
-    soundH.loop = true;
+    // sound.loop = true;
+    // soundH.loop = true;
 
     var sounds = [sound, soundH];
 
@@ -14,7 +14,19 @@ function Sound(name) {
             if(!this.playing && songs.canPlay) {
                 if(pH) await soundH.play();
                 else await sound.play();
-            }
+            }// else if(this.playing) {
+            //     if(soundH.paused) {
+            //         if(sound.duration - sound.currentTime < 0.1) {
+            //             console.log(sound.currentTime, sound.duration);
+            //             sound.currentTime = 0;
+            //         }
+            //     }else{
+            //         if(soundH.duration - soundH.currentTime < 0.1) {
+            //             console.log(soundH.currentTime, soundH.duration);
+            //             soundH.currentTime = 0;
+            //         }
+            //     }
+            // }
         },
         volume(n) {
             try{

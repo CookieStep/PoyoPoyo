@@ -17,7 +17,10 @@ function start() {
 	resize();
 	update();
 }
-ctx.clear = () => ctx.clearRect(0, 0, innerWidth, innerHeight);
+ctx.clear = () => {
+	ctx.fillStyle = "#fffa";
+	ctx.fillRect(0, 0, innerWidth, innerHeight);
+};
 async function update() {
 	update.run = true;
 	while(true) {

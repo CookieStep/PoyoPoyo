@@ -127,6 +127,7 @@ addEventListener("keydown", ({code}) => keys.press(code));
 addEventListener("keyup", ({code}) => keys.release(code));
 addEventListener("keydown", ({code}) => {
 	if(code == "Minus") songs.forEach(song => song.volume(-.1));
+	if(code == "Slash") songs.forEach(song => song.volume(-.1));
 	if(code == "Equal") songs.forEach(song => song.volume(.1));
 });
 // addEventListener("focus", () => update.lastFrame = Date.now());

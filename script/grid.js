@@ -106,7 +106,7 @@ var Grid = {
 	// 	return this.array.filter(blob => blob).length;
 	// },
 	width: 6,
-	height: 15,
+	height: 12,
 	canvas: document.createElement("canvas"),
 	array: []
 }

@@ -77,9 +77,9 @@ function music() {
 		songs.stop("Level1");
 	}
 	song.play();
-	if(!song.H && blobs.length > 55) {
+	if(!song.H && blobs.size > 45) {
 		song.switch(true);
-	}else if(song.H && blobs.length < 45) {
+	}else if(song.H && blobs.size < 35) {
 		song.switch(false)
 	}
 }

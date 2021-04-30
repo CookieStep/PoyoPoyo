@@ -50,7 +50,7 @@ const Color = {
 			for(let color of this.all) {
 				for(let i = 0; i < 12; i++) extra.push(color);
 			}
-			extra.sort(() => random() - .5);
+			for(let i = 0; i < 3; i++) extra.sort(() => random() - .5);
 			list.push(...extra);
 		}
 

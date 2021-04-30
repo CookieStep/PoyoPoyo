@@ -52,7 +52,7 @@ var Grid = {
 						blob.y += .2;
 					}
 					drawBlobs();
-					await delay(1);
+					await frame();
 				}
 			}while(fall);
 			var poof;
@@ -82,7 +82,10 @@ var Grid = {
 		var {height, array} = this;
 		delete array[y * height + x];
 	},
+	// get amount() {
+	// 	return this.array.filter(blob => blob).length;
+	// },
 	width: 6,
-	height: 10,
+	height: 15,
 	array: []
 }

@@ -29,7 +29,7 @@ class Blob{
 		);
 		this.x = round(Grid.width/2);
 		mainBlob = this;
-		blobs.push(this);
+		blobs.add(this);
 	}
 	check(n=this.x) {
 		return this.y < Grid.lowest(n);
@@ -77,10 +77,18 @@ class Blob{
 			if(keys.multi("ArrowRight") && this.check(this.x + 1)) ++this.x;
 			if(keys.multi("KeyA") && this.check(this.x - 1)) --this.x;
 			if(keys.multi("ArrowLeft") && this.check(this.x - 1)) --this.x;
-			if(keys.has("KeyS") || keys.has("ArrowDown")) this.y += deltaTime/50;
-			else this.y += deltaTime/500;
+			if(keys.has("KeyS") || keys.has("ArrowDown")) this.y += deltaTime/50// * (1 + gameTime/100000);
+			else this.y += deltaTime/500// * (1 + gameTime/100000);
 
-			if(keys.multi("KeyW") || keys.multi("ArrowUp")) this.y = Grid.height;
+			if(keys.multi("KeyW") || keys.multi("ArrowUp")) {
+				this.active = false;
+				while(this.y + 1 < Grid.lowest(this.x)) {
+					this.y += 1;
+					drawBlobs();
+					await frame();
+				}
+				this.y = Grid.height;
+			}
 
 			if(this.x < 0) this.x = 0;
 			if(this.x >= Grid.width) this.x = Grid.width - 1;
@@ -90,9 +98,9 @@ class Blob{
 		}
 	}
 	draw() {
+		if(this.active) this.bottom.draw();
 		this.texture.draw();
 		if(this.dead) this.glow.draw();
-		if(!Falling && this.active) this.bottom.draw();
 	}
 
 	active = true;

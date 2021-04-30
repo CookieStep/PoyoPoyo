@@ -47,7 +47,7 @@ const Color = {
 				for(let i = 0; i < 12; i++) list.push(color);
 			}
 			list.sort(() => random() - .5);
-			console.log(list);
+			// console.log(list);
 		}
 
 		return list.pop();
@@ -57,9 +57,11 @@ const Color = {
 
 var delay = time => new Promise(resolve => setTimeout(resolve, time));
 
+var frame = () => new Promise(resolve => requestAnimationFrame(resolve));
+
 var scale = 40;
 
 var randomFrom = ([...items]) => items[floor(random() * items.length)];
 
-/**@type {Blob[]}*/
-var blobs = [];
+/**@type {Set<Blob>}*/
+var blobs = new Set;

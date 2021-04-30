@@ -17,11 +17,9 @@ function start() {
 	resize();
 	update();
 }
-var blobDownHandler = {
-	update() {}
-}
 ctx.clear = () => ctx.clearRect(0, 0, innerWidth, innerHeight);;
 async function update() {
+	await new Promise(resolve => addEventListener("mousedown", resolve));
 	while(true) {
 		var time = Date.now();
 		var {lastFrame} = update;
@@ -30,35 +28,50 @@ async function update() {
 			gameTime += deltaTime;
 		}
 		update.lastFrame = time;
+		music();
 		if(!mainBlob) new Blob(Color.next());
 		if(mainBlob.y >= Grid.lowest(mainBlob.x)) {
-			blobs.pop();
+			blobs.delete(mainBlob);
 			mainBlob = undefined;
 		}
-		var len = blobs.length;
-		for(let b = 0; b < len; b++) {
-			blob = blobs[b];
+		for(let blob of blobs) {
 			await blob.update();
 		}
 		await Grid.fall();
-		await delay(10);
+		await frame();
 	}
 }
 async function Inactive() {
-	var gone = blobs.filter(blob => blob.inactive);
+	var gone = [...blobs].filter(blob => blob.inactive);
 	if(gone.length) {
-		console.log(gone);
+		// console.log(gone);
 		// var loops = 1;
 		var itera = 40;
 		for(let i = 0; i < 20; i++) {
 			for(let blob of gone) {
 				blob.dead = 1 - abs((i % itera) - itera/2)/itera * 2;
+				blob.draw();
+				if(i + 1 == 20) blobs.delete(blob);
 			}
 			drawBlobs();
-			await delay(1);
+			await frame();
 		}
 	}
-	blobs = blobs.filter(blob => !blob.inactive);
+}
+function music() {
+	var song;
+	if(gameTime < 100000) {
+		song = songs.get("Level1");
+	}else{
+		song = songs.get("Level2");
+		songs.stop("Level1");
+	}
+	song.play();
+	if(!song.H && blobs.length > 55) {
+		song.switch(true);
+	}else if(song.H && blobs.length < 45) {
+		song.switch(false)
+	}
 }
 function drawBlobs() {
 	ctx.clear();

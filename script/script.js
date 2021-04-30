@@ -19,8 +19,11 @@ function start() {
 }
 ctx.clear = () => ctx.clearRect(0, 0, innerWidth, innerHeight);
 async function update() {
-	await new Promise(resolve => addEventListener("mousedown", resolve));
+	update.run = true;
 	while(true) {
+		if(!update.run) {
+			await unpause;
+		}
 		var time = Date.now();
 		var {lastFrame} = update;
 		if(lastFrame) {
@@ -34,10 +37,7 @@ async function update() {
 		if(mainBlob.y >= Grid.lowest(mainBlob.x)) {
 			blobs.delete(mainBlob);
 			mainBlob = undefined;
-		}
-		for(let blob of blobs) {
-			await blob.update();
-		}
+		}else mainBlob.update();
 		await Grid.fall();
 		await frame();
 	}
@@ -74,6 +74,23 @@ function music() {
 		song.switch(false)
 	}
 }
+var drawBlob = function() {
+	var bx = 0, by = 0, bcolor;
+	var blob = (new Texture()
+		.set("h", 1)
+		.set("w", 1)
+		.set("shape", shapes.get("square-2"))
+		.link("fill", () => Color.code[bcolor])
+		.link("x", () => bx)
+		.link("y", () => by)
+	);
+	return function(x, y, color) {
+		bx = x;
+		by = y;
+		bcolor = color;
+		blob.draw(ctx);
+	}
+}()
 function drawBlobs() {
 	ctx.clear();
 	var x = Grid.width * scale + 1
@@ -82,6 +99,9 @@ function drawBlobs() {
 	ctx.stroke();
 	ctx.drawImage(Grid.canvas, 0, 0);
 	if(mainBlob) mainBlob.draw(ctx);
+	for(let i = 0; i < 5; i++) {
+		drawBlob(Grid.width + .3 + i * 1.3, .3, Color.list[i]);
+	}
 };
 function resize() {
 	assign(canvas, {
@@ -98,6 +118,19 @@ addEventListener("keydown", ({code}) => {
 	if(code == "Minus") songs.forEach(song => song.volume(-.1));
 	if(code == "Equal") songs.forEach(song => song.volume(.1));
 });
-addEventListener("focus", () => update.lastFrame = Date.now());
+// addEventListener("focus", () => update.lastFrame = Date.now());
+var unpause = 0;
+addEventListener("blur", () => {
+	update.run = false;
+	unpause = new Promise(resolve => {
+		var listener = () => {
+			removeEventListener("focus", listener);
+			update.lastFrame = Date.now()
+			update.run = true;
+			resolve();
+		};
+		addEventListener("focus", listener);
+	});
+});
 addEventListener("resize", resize);
 addEventListener("load", start);

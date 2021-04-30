@@ -51,7 +51,7 @@ const Color = {
 			// console.log(list);
 		}
 
-		return list.pop();
+		return list.shift();
 	},
 	list: []
 }

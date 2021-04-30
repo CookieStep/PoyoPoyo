@@ -10,11 +10,12 @@ function Sound(name) {
     var pH = false;
 
     return {
-        play() {
+        async play() {
             if(!this.playing) {
-                console.log("play");
-                if(pH) soundH.play();
-                else sound.play();
+                try{
+                    if(pH) await soundH.play();
+                    else await sound.play();
+                }catch(_) {}
             }
         },
         volume(n) {
@@ -25,14 +26,15 @@ function Sound(name) {
         },
         async switch(H) {
             if(H == pH) return;
-            console.log("switch");
             var a = sounds[1 - H];
             var b = sounds[+H];
 
-            a.pause();
-            b.currentTime = a.currentTime * b.duration / a.duration;
-            await b.play();
-            pH = H;
+            try{
+                a.pause();
+                b.currentTime = a.currentTime * b.duration / a.duration;
+                await b.play();
+                pH = H;
+            }catch(_) {}
         },
         stop() {
             if(this.playing) {

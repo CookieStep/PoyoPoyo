@@ -11,11 +11,9 @@ function Sound(name) {
 
     return {
         async play() {
-            if(!this.playing) {
-                try{
-                    if(pH) await soundH.play();
-                    else await sound.play();
-                }catch(_) {}
+            if(!this.playing && songs.canPlay) {
+                if(pH) await soundH.play();
+                else await sound.play();
             }
         },
         volume(n) {

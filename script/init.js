@@ -27,8 +27,8 @@ const Color = {
 		"#faa",
 		"#aaf",
 		"#afa",
-		"#faf",
-		"#ffa"
+		"#daf",
+		"#ff5"
 	],
 	/**@readonly*/
 	red: 0,
@@ -39,7 +39,7 @@ const Color = {
 	/**@readonly*/
 	purple: 3,
 	/**@readonly*/
-	// yellow: 4,
+	yellow: 4,
 	/**@readonly*/
 	all: [0, 1, 2, 3],
 	next() {

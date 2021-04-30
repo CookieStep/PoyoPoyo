@@ -82,6 +82,10 @@ class Blob{
 	}
 	async update() {
 		if(this.active) {
+			if(keys.single("KeyE") || keys.single("ShiftRight")) {
+				var {list} = Color;
+				[list[0], this.color] = [this.color, list[0]];
+			}
 			if(keys.multi("KeyD") && this.check(this.x + 1)) ++this.x;
 			if(keys.multi("ArrowRight") && this.check(this.x + 1)) ++this.x;
 			if(keys.multi("KeyA") && this.check(this.x - 1)) --this.x;

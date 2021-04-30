@@ -128,7 +128,7 @@ function resize() {
 
 addEventListener("keydown", ({code}) => keys.press(code));
 addEventListener("keyup", ({code}) => keys.release(code));
-addEventListener("keydown", ({code}) => {
+addEventListener("keypress", ({code}) => {
 	songs.canPlay = true;
 	if(code == "Minus") songs.forEach(song => song.volume(-.1));
 	if(code == "Slash") songs.forEach(song => song.volume(-.1));

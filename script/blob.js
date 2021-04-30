@@ -5,7 +5,11 @@ class Blob{
 			.set("h", 1)
 			.set("w", 1)
 			.use(this)
-				.for("x", "y")
+				.for("y")
+			.link("x", () => {
+				if(this.active) return this.sx;
+				else return this.x;
+			})
 			.set("shape", shapes.get("square-2"))
 			.link("fill", () => Color.code[this.color])
 		);
@@ -21,13 +25,18 @@ class Blob{
 			.set("h", 1)
 			.set("w", 1)
 			.use(this)
-				.for("x")
+				.as(
+					["bx", "x"],
+					["by", "y"]
+				)
 			.set("shape", shapes.get("square-2"))
-			.link("y", () => Grid.lowest(this.x))
 			.link("fill", () => Color.code[this.color] + "a")
 			.set("stroke", "#000")
 		);
 		this.x = round(Grid.width/2);
+		this.by = Grid.height;
+		this.sx = this.x;
+		this.bx = this.x;
 		mainBlob = this;
 		blobs.add(this);
 	}
@@ -92,6 +101,10 @@ class Blob{
 
 			if(this.x < 0) this.x = 0;
 			if(this.x >= Grid.width) this.x = Grid.width - 1;
+			this.sx = scrollTo(this.sx, this.x, 0.1)
+			var y = Grid.lowest(this.x);
+			this.bx = scrollTo(this.bx, this.x, 0.3);
+			this.by = scrollTo(this.by, y, 0.3);
 			if(!this.check(this.x)) {
 				Grid.add(this);
 			}
@@ -112,3 +125,8 @@ class Blob{
 	dead = 0;
 }
 var mainBlob;
+
+function scrollTo(num, to, m) {
+	if(abs(num - to) < m) return to;
+	else return num + m * sign(to - num);
+}

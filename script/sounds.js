@@ -38,7 +38,6 @@ function Sound(name) {
         },
         stop() {
             if(this.playing) {
-                console.log("stop");
                 sound.pause();
                 soundH.pause();
             }

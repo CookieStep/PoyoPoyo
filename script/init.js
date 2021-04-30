@@ -14,10 +14,12 @@ var {
 	round,
 	ceil,
 	abs,
+	sign,
+	max,
 	PI
 } = Math;
 
-var Falling;
+var nothing = () => {};
 
 const Color = {
 	/**@readonly*/
@@ -43,12 +45,13 @@ const Color = {
 	next() {
 		var {list} = this;
 
-		if(!list.length) {
+		if(list.length <= 6) {
+			var extra = [];
 			for(let color of this.all) {
-				for(let i = 0; i < 12; i++) list.push(color);
+				for(let i = 0; i < 12; i++) extra.push(color);
 			}
-			list.sort(() => random() - .5);
-			// console.log(list);
+			extra.sort(() => random() - .5);
+			list.push(...extra);
 		}
 
 		return list.shift();

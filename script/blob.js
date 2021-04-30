@@ -89,6 +89,9 @@ class Blob{
 			if(keys.has("KeyS") || keys.has("ArrowDown")) this.y += deltaTime/50// * (1 + gameTime/100000);
 			else this.y += deltaTime/500// * (1 + gameTime/100000);
 
+			if(this.x < 0) this.x = 0;
+			if(this.x >= Grid.width) this.x = Grid.width - 1;
+
 			if(keys.multi("KeyW") || keys.multi("ArrowUp")) {
 				this.active = false;
 				while(this.y + 1 < Grid.lowest(this.x)) {
@@ -99,12 +102,10 @@ class Blob{
 				this.y = Grid.height;
 			}
 
-			if(this.x < 0) this.x = 0;
-			if(this.x >= Grid.width) this.x = Grid.width - 1;
 			this.sx = scrollTo(this.sx, this.x, 0.1)
 			var y = Grid.lowest(this.x);
-			this.bx = scrollTo(this.bx, this.x, 0.3);
-			this.by = scrollTo(this.by, y, 0.3);
+			this.bx = snapTo(this.bx, this.x, 0.5);
+			this.by = snapTo(this.by, y, 0.5);
 			if(!this.check(this.x)) {
 				Grid.add(this);
 			}
@@ -129,4 +130,8 @@ var mainBlob;
 function scrollTo(num, to, m) {
 	if(abs(num - to) < m) return to;
 	else return num + m * sign(to - num);
+}
+function snapTo(num, to, m) {
+	if(abs(num - to) < m) return to;
+	else return num + m * (to - num);
 }

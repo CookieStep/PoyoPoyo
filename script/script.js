@@ -49,12 +49,12 @@ async function Inactive() {
 		// var loops = 1;
 		var itera = 40;
 		for(let i = 0; i < 20; i++) {
+			drawBlobs();
 			for(let blob of gone) {
 				blob.dead = 1 - abs((i % itera) - itera/2)/itera * 2;
-				blob.draw();
+				blob.draw(ctx);
 				if(i + 1 == 20) blobs.delete(blob);
 			}
-			drawBlobs();
 			await frame();
 		}
 	}
@@ -80,7 +80,8 @@ function drawBlobs() {
 	ctx.moveTo(x, 0);
 	ctx.lineTo(x, innerHeight);
 	ctx.stroke();
-	for(let blob of blobs) blob.draw();
+	ctx.drawImage(Grid.canvas, 0, 0);
+	if(mainBlob) mainBlob.draw(ctx);
 };
 function resize() {
 	assign(canvas, {
@@ -88,6 +89,7 @@ function resize() {
 		height: innerHeight
 	});
 	scale = innerHeight/Grid.height;
+	Grid.resizeCanvas();
 }
 
 addEventListener("keydown", ({code}) => keys.press(code));

@@ -97,10 +97,10 @@ class Blob{
 			}
 		}
 	}
-	draw() {
-		if(this.active) this.bottom.draw();
-		this.texture.draw();
-		if(this.dead) this.glow.draw();
+	draw(ctx) {
+		if(this.active) this.bottom.draw(ctx);
+		this.texture.draw(ctx);
+		if(this.dead) this.glow.draw(ctx);
 	}
 
 	active = true;

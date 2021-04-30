@@ -56,7 +56,7 @@ class Texture{
 	get(prop) {
 		return this.data[prop]?.value;
 	}
-	draw() {
+	draw(ctx) {
 		var {x, y, w, h, r=0, fill, stroke, blur, shape} = this.values;
 		x *= scale;
 		y *= scale;

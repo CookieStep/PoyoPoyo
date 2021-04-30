@@ -39,6 +39,7 @@ var Grid = {
 						let blob = this.get(x, y);
 						if(blob && !this.get(x, y + 1)) {
 							fall = true;
+							blob.falling = true;
 							blob.unattach();
 							moved.add(blob);
 							mov.add(blob);
@@ -47,11 +48,13 @@ var Grid = {
 						}
 					}
 				}
+				this.reDraw();
 				if(fall) for(let i = 0; i < 5; i++) {
+					drawBlobs();
 					for(let blob of mov) {
 						blob.y += .2;
+						blob.draw(ctx);
 					}
-					drawBlobs();
 					await frame();
 				}
 			}while(fall);
@@ -60,7 +63,9 @@ var Grid = {
 				blob.y = round(blob.y);
 				blob.settle() && (poof = true);
 				attach = true;
+				blob.falling = false;
 			}
+			this.reDraw();
 			drawBlobs();
 			if(poof) {
 				await delay(100);
@@ -82,10 +87,25 @@ var Grid = {
 		var {height, array} = this;
 		delete array[y * height + x];
 	},
+	resizeCanvas() {
+		this.canvas.width = scale * this.width;
+		this.canvas.height = scale * this.height;
+		this.reDraw();
+	},
+	reDraw() {
+		var {canvas, ctx} = this;
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		for(let id in this.array) {
+			let blob = this.array[id];
+			if(!blob.falling) blob.draw(ctx);
+		}
+	},
 	// get amount() {
 	// 	return this.array.filter(blob => blob).length;
 	// },
 	width: 6,
 	height: 15,
+	canvas: new OffscreenCanvas(100, 100),
 	array: []
 }
+Grid.ctx = Grid.canvas.getContext("2d");

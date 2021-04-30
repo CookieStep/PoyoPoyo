@@ -33,12 +33,21 @@ async function update() {
 		update.lastFrame = time;
 		if(++ticks % 1000 == 0) resize();
 		music();
-		if(!mainBlob) new Blob(Color.next());
+		if(!mainBlob) {
+			await nextBlob();
+			new Blob(Color.next());
+		}
 		if(mainBlob.y >= Grid.lowest(mainBlob.x)) {
 			blobs.delete(mainBlob);
 			mainBlob = undefined;
-		}else mainBlob.update();
+		}else await mainBlob.update();
 		await Grid.fall();
+		await frame();
+	}
+}
+async function nextBlob() {
+	for(let a = 0; a < 10; a++) {
+		drawBlobs(a/10);
 		await frame();
 	}
 }
@@ -91,7 +100,7 @@ var drawBlob = function() {
 		blob.draw(ctx);
 	}
 }()
-function drawBlobs() {
+function drawBlobs(a=0) {
 	ctx.clear();
 	var x = Grid.width * scale + 1
 	ctx.moveTo(x, 0);
@@ -99,8 +108,10 @@ function drawBlobs() {
 	ctx.stroke();
 	ctx.drawImage(Grid.canvas, 0, 0);
 	if(mainBlob) mainBlob.draw(ctx);
-	for(let i = 0; i < 5; i++) {
-		drawBlob(Grid.width + .3 + i * 1.3, .3, Color.list[i]);
+	for(let i = 4 + ceil(a); i >= 0; i--) {
+		if(i == 0) drawBlob(Grid.width + .3 + i * 1.3, .3 - (a * 1.3), Color.list[i]);
+		else if(i != 5) drawBlob(Grid.width + .3 + (i - a) * 1.3, .3, Color.list[i]);
+		else drawBlob(Grid.width + .3 + (i - 1) * 1.3, .3, Color.list[i]);
 	}
 };
 function resize() {

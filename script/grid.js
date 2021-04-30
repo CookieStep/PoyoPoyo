@@ -24,12 +24,12 @@ var Grid = {
 		}
 	},
 	async fall() {
-		this.clean();
 		var {width, height} = this;
 		let fall, moved, attach;
 		do{
 			attach = false;
 			moved = new Set;
+			this.clean();
 			await Inactive();
 			do{
 				fall = false;
@@ -39,6 +39,7 @@ var Grid = {
 						let blob = this.get(x, y);
 						if(blob && !this.get(x, y + 1)) {
 							fall = true;
+							attach = true;
 							blob.falling = true;
 							blob.unattach();
 							moved.add(blob);
@@ -54,6 +55,7 @@ var Grid = {
 					for(let blob of mov) {
 						blob.y += .2;
 						blob.draw(ctx);
+						blob.falling = false;
 					}
 					await frame();
 				}
@@ -67,10 +69,10 @@ var Grid = {
 			}
 			this.reDraw();
 			drawBlobs();
-			if(poof) {
-				await delay(100);
-				console.log("Poof");
-			}
+			// if(poof) {
+			// 	await delay(100);
+			// 	console.log("Poof");
+			// }
 		}while(attach);
 		update.lastFrame = Date.now();
 	},

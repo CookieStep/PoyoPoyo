@@ -61,8 +61,14 @@ const Color = {
 
 var delay = time => new Promise(resolve => setTimeout(resolve, time));
 
-var frame = () => new Promise(resolve => requestAnimationFrame(resolve));
-
+var frameRate = 0;
+var frame = () => {
+	var start = Date.now();
+	return new Promise(resolve => requestAnimationFrame(() => {
+		frameRate = Date.now() - start;
+		resolve();
+	}));
+}
 var scale = 40;
 
 var randomFrom = ([...items]) => items[floor(random() * items.length)];

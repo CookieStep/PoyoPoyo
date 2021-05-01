@@ -18,7 +18,7 @@ function start() {
 	update();
 }
 ctx.clear = () => {
-	ctx.fillStyle = "#fffa";
+	ctx.fillStyle = "#fff";
 	ctx.fillRect(0, 0, innerWidth, innerHeight);
 };
 async function update() {
@@ -116,6 +116,11 @@ function drawBlobs(a=0) {
 		else if(i != 5) drawBlob(Grid.width + .3 + (i - a) * 1.3, .3, Color.list[i]);
 		else drawBlob(Grid.width + .3 + (i - 1) * 1.3, .3, Color.list[i]);
 	}
+	ctx.fillStyle = "black";
+	var h = innerHeight/20;
+	ctx.font = `${h}px Arial`;
+	ctx.fillText(`${frameRate}ms`, x, innerHeight);
+	ctx.fillText(`${round(10000/frameRate)/10}fps`, x, innerHeight - h);
 };
 function resize() {
 	assign(canvas, {

@@ -196,7 +196,7 @@ var mainBlob;
 
 function scrollTo(num, to, m) {
 	if(abs(num - to) < m) return to;
-	else return num + m * round(to - num);
+	else return num + m * sign(to - num);
 }
 function snapTo(num, to, m) {
 	if(abs(num - to) < m) return to;

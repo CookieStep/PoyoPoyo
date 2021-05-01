@@ -33,7 +33,15 @@ class Blob{
 			.link("fill", () => Color.code[this.color] + "a")
 			.set("stroke", "#000")
 		);
-		this.x = round(Grid.width/2);
+		if(color == -1) {
+			var weights = [];
+			for(let i = 0; i < Grid.width; i++) {
+				weights.push(Grid.lowest(i) + 1);
+			}
+			this.x = weight(weights);
+		}else{
+			this.x = round(Grid.width/2);
+		}
 		this.by = Grid.height;
 		this.sx = this.x;
 		this.bx = this.x;
@@ -54,23 +62,48 @@ class Blob{
 			blob.attach(this);
 		}
 	}
+	explode() {
+		var blobs = [
+			[0, 1],
+			[-1, 0],
+			[1, 0],
+			[0, -1]
+		].map(([x, y]) => Grid.get(this.x + x, this.y + y));
+		var barriers = [];
+		for(let blob of blobs) {
+			if(!blob || blob.color != -1) continue;
+			barriers.push(blob);
+		}
+		return barriers;
+	}
 	attach(blob) {
-		var {group} = this;
-		if(!group) {
-			this.group = group = new Set([this]);
-		}
-		if(!blob.group) {
-			group.add(blob);
-			blob.group = group;
-		}else{
-			var group = new Set([...group, ...blob.group]);
-			for(let blob of group) {
-				blob.group = group;
+		if(this.color != -1) {
+			var {group} = this;
+			if(!group) {
+				/**@type {Set<Blob>}*/
+				this.group = group = new Set([this]);
 			}
-		}
-		if(group.size >= 4) {
-			group.forEach(blob => blob.inactive = true);
-			return true;
+			if(!blob.group) {
+				group.add(blob);
+				blob.group = group;
+			}else{
+				var group = new Set([...group, ...blob.group]);
+				for(let blob of group) {
+					blob.group = group;
+				}
+			}
+			if(group.size >= 4) {
+				/**@type {Blob[][]}*/
+				var barriers = [];
+				for(let blob of group) {
+					barriers.push(blob.explode());
+					blob.inactive = true;
+				}
+				barriers.flat().forEach(barrier => {
+					barrier.inactive = true;
+				});
+				return true;
+			}
 		}
 	}
 	unattach() {
@@ -82,21 +115,7 @@ class Blob{
 	}
 	async update() {
 		if(this.active) {
-			if(keys.single("KeyE") || keys.single("ShiftRight")) {
-				var {list} = Color;
-				[list[0], this.color] = [this.color, list[0]];
-			}
-			if(keys.multi("KeyD") && this.check(this.x + 1)) ++this.x;
-			if(keys.multi("ArrowRight") && this.check(this.x + 1)) ++this.x;
-			if(keys.multi("KeyA") && this.check(this.x - 1)) --this.x;
-			if(keys.multi("ArrowLeft") && this.check(this.x - 1)) --this.x;
-			if(keys.has("KeyS") || keys.has("ArrowDown")) this.y += deltaTime/50// * (1 + gameTime/100000);
-			else this.y += deltaTime/500// * (1 + gameTime/100000);
-
-			if(this.x < 0) this.x = 0;
-			if(this.x >= Grid.width) this.x = Grid.width - 1;
-
-			if(keys.multi("KeyW") || keys.multi("ArrowUp")) {
+			if(this.color == -1) {
 				this.active = false;
 				while(this.y + 1 < Grid.lowest(this.x)) {
 					this.y += 1;
@@ -104,14 +123,40 @@ class Blob{
 					await frame();
 				}
 				this.y = Grid.height;
-			}
 
-			this.sx = scrollTo(this.sx, this.x, 0.1)
-			var y = Grid.lowest(this.x);
-			this.bx = snapTo(this.bx, this.x, 0.5);
-			this.by = snapTo(this.by, y, 0.5);
-			if(!this.check(this.x)) {
 				Grid.add(this);
+			}else{
+				if(keys.single("KeyE") || keys.single("ShiftRight")) {
+					var {list} = Color;
+					if(list[0] != -1) [list[0], this.color] = [this.color, list[0]];
+				}
+				if(keys.multi("KeyD") && this.check(this.x + 1)) ++this.x;
+				if(keys.multi("ArrowRight") && this.check(this.x + 1)) ++this.x;
+				if(keys.multi("KeyA") && this.check(this.x - 1)) --this.x;
+				if(keys.multi("ArrowLeft") && this.check(this.x - 1)) --this.x;
+				if(keys.has("KeyS") || keys.has("ArrowDown")) this.y += deltaTime/50 * diffSpeed();// * (1 + gameTime/100000);
+				else this.y += deltaTime/500 * diffSpeed();// * (1 + gameTime/100000);
+
+				if(this.x < 0) this.x = 0;
+				if(this.x >= Grid.width) this.x = Grid.width - 1;
+
+				if(keys.multi("KeyW") || keys.multi("ArrowUp")) {
+					this.active = false;
+					while(this.y + 1 < Grid.lowest(this.x)) {
+						this.y += 1 * diffSpeed();
+						drawBlobs();
+						await frame();
+					}
+					this.y = Grid.height;
+				}
+
+				this.sx = scrollTo(this.sx, this.x, 0.1 * diffSpeed())
+				var y = Grid.lowest(this.x);
+				this.bx = snapTo(this.bx, this.x, 0.5 * diffSpeed());
+				this.by = snapTo(this.by, y, 0.5 * diffSpeed());
+				if(!this.check(this.x)) {
+					Grid.add(this);
+				}
 			}
 		}
 	}
@@ -122,6 +167,7 @@ class Blob{
 	}
 
 	active = true;
+	inactive = false;
 	x = 0;
 	y = -1;
 	f = 0;

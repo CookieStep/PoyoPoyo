@@ -41,25 +41,49 @@ const Color = {
 	/**@readonly*/
 	yellow: 4,
 	/**@readonly*/
-	all: [0, 1, 2, 3],
+	easy: [0, 1, 2, 3],
+	/**@readonly*/
+	normal: [0, 1, 2, 3, 4],
 	next() {
 		var {list} = this;
 
 		if(list.length <= 6) {
 			var extra = [];
-			for(let color of this.all) {
+			for(let color of (diff < 2? this.easy: this.normal)) {
 				for(let i = 0; i < 8; i++) extra.push(color);
 			}
-			for(let i = 0; i < 5; i++) extra.sort(() => random() - .5);
-			list.push(...extra);
+			if(diff > 0) for(let i = 0; i < 3; i++) extra.push(-1);
+			while(copyCheck()) extra.sort(() => random() * 2 - 1);
+			for(let i in extra) {
+				if(extra[i] == -1) {
+					extra[i] = new Array(3).fill(-1);
+				}
+			}
+			list.push(...extra.flat());
 		}
-
 		return list.shift();
+
+		function copyCheck() {
+			var col = -2, cou = 0;
+			for(let color of extra) {
+				if(col != color) {
+					cou = 0;
+					col = color;
+				}else{
+					++cou;
+					if(cou > 4)
+					return true;
+				}
+			}
+		}
 	},
 	list: []
 }
+Color.code[-1] = "#555";
 
 var delay = time => new Promise(resolve => setTimeout(resolve, time));
+
+var diff = 0;
 
 var frameRate = 0;
 var frame = () => {
@@ -69,6 +93,24 @@ var frame = () => {
 		resolve();
 	}));
 }
+
+function weight(weights) {
+	let total = 0
+	for(let value of weights) {
+		total += value;
+	}
+	let acu = 0;
+	let opt = Math.random() * total
+	let chosen = 0;
+	for(let id = 0; id < weights.length; id++) {
+		let value = weights[id]
+		if(acu < opt)
+		chosen = id
+		acu += value
+	}
+	return chosen
+}
+
 var scale = 40;
 
 var randomFrom = ([...items]) => items[floor(random() * items.length)];

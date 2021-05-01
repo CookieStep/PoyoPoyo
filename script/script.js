@@ -34,7 +34,7 @@ async function update() {
 			gameTime += deltaTime;
 		}
 		update.lastFrame = time;
-		if(++ticks % 1000 == 0) resize();
+		// if(++ticks % 1000 == 0) resize();
 		music();
 		if(!mainBlob) {
 			await nextBlob();
@@ -85,14 +85,30 @@ async function Inactive(drawAdd) {
 	var amount = gone.length;
 	return {amount, over, groups, colors};
 }
+function diffSpeed() {
+	var speeds = [
+		1,
+		1.5,
+		2
+	];
+	return speeds[diff];
+}
 function music() {
 	var song;
-	// if(gameTime < 100000) {
-		song = songs.get("Level1");
 	// }else{
 	// 	song = songs.get("Level2");
 	// 	songs.stop("Level1");
-	// }
+	if(gameTime < 100000) {
+		diff = 0;
+		song = songs.get("Level1");
+	}else if(gameTime < 200000){
+		diff = 1;
+		song = songs.get("Level2");
+		songs.stop("Level1");
+	}else{
+		song = songs.get("Level2");
+		diff = 2;
+	}
 	song.play();
 	if(!song.H && blobs.size > 45) {
 		song.switch(true);

@@ -49,14 +49,22 @@ const Color = {
 
 		if(list.length <= 6) {
 			var extra = [];
-			for(let color of (diff < 2? this.easy: this.normal)) {
-				for(let i = 0; i < 8; i++) extra.push(color);
+			var set = diff < 2? this.easy: this.normal;
+			for(let color of set) {
+				for(let i = 0; i < 12; i++) {
+					extra.push(color);
+				}
 			}
 			if(diff > 0) for(let i = 0; i < 3; i++) extra.push(-1);
-			while(copyCheck()) extra.sort(() => random() * 2 - 1);
+			for(let i = 0; i < 10; i++) extra.sort((a, b) => {
+				var num = random() * 2 - 1;
+				if(a == b && a != -1) num -= 1/3;
+				else if(a > b && a != -1) num -= 1/3;
+				return num;
+			});
 			for(let i in extra) {
 				if(extra[i] == -1) {
-					extra[i] = new Array(3).fill(-1);
+					extra[i] = new Array(diff == 1? 3: 5).fill(-1);
 				}
 			}
 			list.push(...extra.flat());

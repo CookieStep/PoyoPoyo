@@ -34,7 +34,7 @@ async function update() {
 			gameTime += deltaTime;
 		}
 		update.lastFrame = time;
-		// if(++ticks % 1000 == 0) resize();
+		if(++ticks % 1000 == 0) resize();
 		music();
 		if(!mainBlob) {
 			await nextBlob();
@@ -88,8 +88,8 @@ async function Inactive(drawAdd) {
 function diffSpeed() {
 	var speeds = [
 		1,
-		1.5,
-		2
+		1.2,
+		1.5
 	];
 	return speeds[diff];
 }

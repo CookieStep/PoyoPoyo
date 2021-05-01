@@ -117,20 +117,12 @@ function music() {
 	}
 }
 var drawBlob = function() {
-	var bx = 0, by = 0, bcolor;
-	var blob = (new Texture()
-		.set("h", 1)
-		.set("w", 1)
-		.set("shape", shapes.get("square-2"))
-		.link("fill", () => Color.code[bcolor])
-		.link("x", () => bx)
-		.link("y", () => by)
-	);
+	var shape = shapes.get("square-2");
 	return function(x, y, color) {
-		bx = x;
-		by = y;
-		bcolor = color;
-		blob.draw(ctx);
+		ctx.setTransform(scale, 0, 0, scale, x * scale, y * scale);
+		ctx.fillStyle = Color.code[color];
+		ctx.fill(shape);
+		ctx.resetTransform();
 	}
 }();
 var score = 0;

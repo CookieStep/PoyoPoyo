@@ -1,47 +1,40 @@
 class Blob{
 	constructor(color) {
 		this.color = color;
-		this.texture = (new Texture()
-			.set("h", 1)
-			.set("w", 1)
-			.use(this)
-				.for("y")
-			.link("x", () => {
-				if(this.active) return this.sx;
-				else return this.x;
-			})
-			.set("shape", shapes.get("square-2"))
-			.link("fill", () => Color.code[this.color])
-		);
-		this.glow = (new Texture()
-			.set("h", 1)
-			.set("w", 1)
-			.use(this)
-				.for("x", "y")
-			.set("shape", shapes.get("square-2"))
-			.link("fill", () => `rgba(255, 255, 255, ${this.dead})`)
-		);
-		this.bottom = (new Texture()
-			.set("h", 1)
-			.set("w", 1)
-			.use(this)
-				.as(
-					["bx", "x"],
-					["by", "y"]
-				)
-			.set("shape", shapes.get("square-2"))
-			.link("fill", () => Color.code[this.color] + "a")
-			.set("stroke", "#000")
-		);
-		if(color == -1) {
-			var weights = [];
-			for(let i = 0; i < Grid.width; i++) {
-				weights.push(Grid.lowest(i) + 1);
-			}
-			this.x = weight(weights);
-		}else{
-			this.x = round(Grid.width/2);
-		}
+		this.shape = shapes.get("square-2");
+		// this.texture = (new Texture()
+		// 	.set("h", 1)
+		// 	.set("w", 1)
+		// 	.use(this)
+		// 		.for("y")
+		// 	.link("x", () => {
+		// 		if(this.active) return this.sx;
+		// 		else return this.x;
+		// 	})
+		// 	.set("shape", shapes.get("square-2"))
+		// 	.link("fill", () => Color.code[this.color])
+		// );
+		// this.glow = (new Texture()
+		// 	.set("h", 1)
+		// 	.set("w", 1)
+		// 	.use(this)
+		// 		.for("x", "y")
+		// 	.set("shape", shapes.get("square-2"))
+		// 	.link("fill", () => `rgba(255, 255, 255, ${this.dead})`)
+		// );
+		// this.bottom = (new Texture()
+		// 	.set("h", 1)
+		// 	.set("w", 1)
+		// 	.use(this)
+		// 		.as(
+		// 			["bx", "x"],
+		// 			["by", "y"]
+		// 		)
+		// 	.set("shape", shapes.get("square-2"))
+		// 	.link("fill", () => Color.code[this.color] + "a")
+		// 	.set("stroke", "#000")
+		// );
+		this.x = round(Grid.width/2);
 		this.by = Grid.height;
 		this.sx = this.x;
 		this.bx = this.x;
@@ -116,6 +109,12 @@ class Blob{
 	async update() {
 		if(this.active) {
 			if(this.color == -1) {
+				var weights = [];
+				for(let i = 0; i < Grid.width; i++) {
+					weights.push(Grid.lowest(i) + 1);
+				}
+				this.x = weight(weights);
+
 				this.active = false;
 				while(this.y + 1 < Grid.lowest(this.x)) {
 					this.y += 1;
@@ -161,9 +160,27 @@ class Blob{
 		}
 	}
 	draw(ctx) {
-		if(this.active) this.bottom.draw(ctx);
-		this.texture.draw(ctx);
-		if(this.dead) this.glow.draw(ctx);
+		var {bx, by, shape, sx, x, y} = this;
+		var color = Color.code[this.color];
+		if(this.active) {
+			ctx.setTransform(scale, 0, 0, scale, bx * scale, by * scale);
+			ctx.fillStyle = color + "a";
+			ctx.lineWidth = 1/100;
+			ctx.strokeStyle = "#000";
+			ctx.fill(shape);
+			ctx.stroke(shape);
+			x = sx;
+		}
+		{
+			ctx.setTransform(scale, 0, 0, scale, x * scale, y * scale);
+			ctx.fillStyle = color;
+			ctx.fill(shape);
+		}
+		if(this.dead) {
+			ctx.fillStyle = `rgba(255, 255, 255, ${this.dead})`;
+			ctx.fill(shape);
+		}
+		ctx.resetTransform();
 	}
 
 	active = true;
@@ -179,7 +196,7 @@ var mainBlob;
 
 function scrollTo(num, to, m) {
 	if(abs(num - to) < m) return to;
-	else return num + m * sign(to - num);
+	else return num + m * round(to - num);
 }
 function snapTo(num, to, m) {
 	if(abs(num - to) < m) return to;

@@ -27,11 +27,11 @@ var Grid = {
 		var {width, height} = this;
 		var fall, moved, attach;
 		var colors = new Set, amount = 0, groups = new Set, over = 0, length = 0;
-		var add = () => length * amount * (colors.size + groups.size + over);
+		var add = () => round(length * amount * (colors.size + groups.size + over));
 		function drawAdd() {
 			var amo = add();
 			if(amo) {
-				var x = Grid.width * scale + 1
+				var x = Grid.width * scale + 1;
 				
 				ctx.fillStyle = "green";
 				var h = innerHeight/20;

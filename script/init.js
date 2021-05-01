@@ -45,46 +45,59 @@ const Color = {
 	/**@readonly*/
 	normal: [0, 1, 2, 3, 4],
 	next() {
-		var {list} = this;
+		var {list, weights, uses} = this;
 
 		if(list.length <= 6) {
 			var extra = [];
 			var set = diff < 2? this.easy: this.normal;
-			for(let color of set) {
-				for(let i = 0; i < 12; i++) {
-					extra.push(color);
+
+			// if(weights.length < set.length) {
+			// 	for(let a = weights.length, b = set.length; a < b; a++) {
+					
+			// 	}
+			// } //missing opposite check
+			if(emptyWeights()) {
+				console.log(uses);
+				for(let a in set) {
+					weights[a] = 8;
+				}
+				if(diff) weights[-1] = 4;
+			}
+
+			while(list.length <= 6) {
+				var c = irandom(weights);
+				--weights[c];
+				++uses[c];
+				if(c != -1) {
+					list.push(set[c]);
+				}else{
+					list.push(...Array(diff * 2 + 1).fill(-1));
 				}
 			}
-			if(diff > 0) for(let i = 0; i < 3; i++) extra.push(-1);
-			for(let i = 0; i < 10; i++) extra.sort((a, b) => {
-				var num = random() * 2 - 1;
-				if(a == b && a != -1) num -= 1/3;
-				else if(a > b && a != -1) num -= 1/3;
-				return num;
-			});
-			for(let i in extra) {
-				if(extra[i] == -1) {
-					extra[i] = new Array(diff == 1? 3: 5).fill(-1);
-				}
-			}
-			list.push(...extra.flat());
+
+			// list.push(...extra.flat());
 		}
 		return list.shift();
 
-		function copyCheck() {
-			var col = -2, cou = 0;
+		function check() {
+			var colors = {};
 			for(let color of extra) {
-				if(col != color) {
-					cou = 0;
-					col = color;
-				}else{
-					++cou;
-					if(cou > 4)
-					return true;
-				}
+				if(color in colors) ++colors[color];
+				else colors[color] = 1;
 			}
+			var counts = new Set(Object.values(colors));
+			return !counts.has(1) && !counts.has(2) && !counts.has(8);
+		}
+
+		function emptyWeights() {
+			for(let i in weights) {
+				if(weights[i]) return false;
+			}
+			return true;
 		}
 	},
+	weights: [],
+	uses: [],
 	list: []
 }
 Color.code[-1] = "#555";
@@ -103,20 +116,40 @@ var frame = () => {
 }
 
 function weight(weights) {
-	let total = 0
-	for(let value of weights) {
+	let total = 0;
+	for(let id in weights) {
+		let value = weights[id];
 		total += value;
 	}
 	let acu = 0;
-	let opt = Math.random() * total
+	let opt = random() * total;
 	let chosen = 0;
-	for(let id = 0; id < weights.length; id++) {
-		let value = weights[id]
-		if(acu < opt)
-		chosen = id
-		acu += value
+	for(let id in weights) {
+		let value = weights[id];
+		if(acu < opt) {
+			chosen = id;
+		}
+		acu += value;
 	}
-	return chosen
+	return isNaN(chosen)? chosen: +chosen;
+}
+function irandom(weights) {
+	let total = 0;
+	for(let id in weights) {
+		let value = weights[id];
+		total += sign(value);
+	}
+	let acu = 0;
+	let opt = random() * total;
+	let chosen = 0;
+	for(let id in weights) {
+		let value = weights[id];
+		if(acu < opt) {
+			chosen = id;
+		}
+		acu += sign(value);
+	}
+	return isNaN(chosen)? chosen: +chosen;
 }
 
 var scale = 40;

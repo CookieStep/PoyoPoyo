@@ -25,12 +25,34 @@ var Grid = {
 	},
 	async fall() {
 		var {width, height} = this;
-		let fall, moved, attach;
+		var fall, moved, attach;
+		var colors = new Set, amount = 0, groups = new Set, over = 0, length = 0;
+		var add = () => length * amount * (colors.size + groups.size + over);
+		function drawAdd() {
+			var amo = add();
+			if(amo) {
+				var x = Grid.width * scale + 1
+				
+				ctx.fillStyle = "green";
+				var h = innerHeight/20;
+				x += scale * .4;
+				ctx.font = `${h}px Arial`;
+
+				ctx.fillText(`+${amo}`, x, h * 5.5);
+			}
+		}
 		do{
 			attach = false;
 			moved = new Set;
 			this.clean();
-			await Inactive();
+			let {groups: gc, amount: ac, colors: cc, over: oc} = await Inactive(drawAdd);
+			if(ac) {
+				colors = new Set([...cc, ...colors]);
+				groups = new Set([...gc, ...groups]);
+				amount += ac;
+				over += oc;
+				++length;
+			}
 			do{
 				fall = false;
 				let mov = new Set;
@@ -57,6 +79,7 @@ var Grid = {
 						blob.draw(ctx);
 						blob.falling = false;
 					}
+					drawAdd();
 					await frame();
 				}
 			}while(fall);
@@ -69,11 +92,13 @@ var Grid = {
 			}
 			this.reDraw();
 			drawBlobs();
+			drawAdd();
 			// if(poof) {
 			// 	await delay(100);
 			// 	console.log("Poof");
 			// }
 		}while(attach);
+		score += add();
 		update.lastFrame = Date.now();
 	},
 	/**@returns {Blob}*/

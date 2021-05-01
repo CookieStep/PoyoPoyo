@@ -54,14 +54,26 @@ async function nextBlob() {
 		await frame();
 	}
 }
-async function Inactive() {
+async function Inactive(drawAdd) {
 	var gone = [...blobs].filter(blob => blob.inactive);
+	var groups = new Set;
+	var colors = new Set;
+	var over = 0;
 	if(gone.length) {
 		// console.log(gone);
 		// var loops = 1;
 		var itera = 40;
+		for(let blob of gone) {
+			colors.add(blob.color);
+			let {group} = blob;
+			if(group && !groups.has(group)) {
+				groups.add(group);
+				over += group.size - 4;
+			}
+		}
 		for(let i = 0; i < 20; i++) {
 			drawBlobs();
+			drawAdd();
 			for(let blob of gone) {
 				blob.dead = 1 - abs((i % itera) - itera/2)/itera * 2;
 				blob.draw(ctx);
@@ -70,14 +82,16 @@ async function Inactive() {
 			await frame();
 		}
 	}
+	var amount = gone.length;
+	return {amount, over, groups, colors};
 }
 function music() {
 	var song;
 	if(gameTime < 100000) {
 		song = songs.get("Level1");
-	}else{
-		song = songs.get("Level2");
-		songs.stop("Level1");
+	// }else{
+	// 	song = songs.get("Level2");
+	// 	songs.stop("Level1");
 	}
 	song.play();
 	if(!song.H && blobs.size > 45) {
@@ -102,10 +116,11 @@ var drawBlob = function() {
 		bcolor = color;
 		blob.draw(ctx);
 	}
-}()
+}();
+var score = 0;
 function drawBlobs(a=0) {
 	ctx.clear();
-	var x = Grid.width * scale + 1
+	var x = Grid.width * scale + 1;
 	ctx.moveTo(x, 0);
 	ctx.lineTo(x, innerHeight);
 	ctx.stroke();
@@ -118,9 +133,12 @@ function drawBlobs(a=0) {
 	}
 	ctx.fillStyle = "black";
 	var h = innerHeight/20;
+	x += scale * .4;
 	ctx.font = `${h}px Arial`;
-	ctx.fillText(`${frameRate}ms`, x, innerHeight);
-	ctx.fillText(`${round(10000/frameRate)/10}fps`, x, innerHeight - h);
+	ctx.fillText(`${frameRate}ms`, x, innerHeight - h/2);
+	ctx.fillText(`${round(10000/frameRate)/10}fps`, x, innerHeight - h * 3/2);
+
+	ctx.fillText(`${score}`, x, h * 4);
 };
 function resize() {
 	assign(canvas, {

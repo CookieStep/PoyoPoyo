@@ -87,12 +87,12 @@ async function Inactive(drawAdd) {
 }
 function music() {
 	var song;
-	if(gameTime < 100000) {
+	// if(gameTime < 100000) {
 		song = songs.get("Level1");
 	// }else{
 	// 	song = songs.get("Level2");
 	// 	songs.stop("Level1");
-	}
+	// }
 	song.play();
 	if(!song.H && blobs.size > 45) {
 		song.switch(true);

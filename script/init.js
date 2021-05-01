@@ -47,14 +47,13 @@ const Color = {
 	/**@readonly*/
 	all: "RBGPY",
 	next() {
-		var {list, all} = this;
+		var {list} = this
+		var set = diff < 2? this.easy: this.normal;;
 
 		if(list.length <= 6) {
-			var set = diff < 2? this.easy: this.normal;
-
 			var extra = [];
 
-			for(let i = 0, m = set.length, l = 16 * m; i < l; i++) {
+			for(let i = 0, m = 5, l = 16 * m; i < l; i++) {
 				extra.push(i % m);
 			}
 			for(let i = 0; i < 4; i++) {
@@ -65,10 +64,10 @@ const Color = {
 
 			list.push(...extra.flat());
 		}
-		for(let i = 0; i < 7; i++) {
+		for(let i = 0; i < 8; i++) {
 			if(list[i] == -2) {
 				list[i] = new Array(diff? diff * 2 + 1: 0).fill(-1);
-			}
+			}else if(set.indexOf(list[i]) == -1) list[i] = [];
 		}
 		list = list.flat();
 		this.list = list;

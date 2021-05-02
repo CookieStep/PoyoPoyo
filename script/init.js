@@ -67,7 +67,7 @@ const Color = {
 		for(let i = 0; i < 8; i++) {
 			if(list[i] == -2) {
 				list[i] = new Array(diff? diff * 2 + 1: 0).fill(-1);
-			}else if(set.indexOf(list[i]) == -1) list[i] = [];
+			}else if(list[i] == -1 && set.indexOf(list[i]) == -1) list[i] = [];
 		}
 		list = list.flat();
 		this.list = list;

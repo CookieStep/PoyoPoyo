@@ -34,22 +34,22 @@ class Blob{
 		// 	.link("fill", () => Color.code[this.color] + "a")
 		// 	.set("stroke", "#000")
 		// );
-		this.x = round(Grid.width/2);
-		this.by = Grid.height;
+		this.x = round(grid.width/2);
+		this.by = grid.height;
 		this.sx = this.x;
 		this.bx = this.x;
 		mainBlob = this;
 		blobs.add(this);
 	}
 	check(n=this.x) {
-		return this.y < Grid.lowest(n);
+		return this.y < grid.lowest(n);
 	}
 	settle() {
 		var blobs = [
 			[0, 1],
 			[-1, 0],
 			[1, 0]
-		].map(([x, y]) => Grid.get(this.x + x, this.y + y));
+		].map(([x, y]) => grid.get(this.x + x, this.y + y));
 		for(let blob of blobs) {
 			if(!blob || blob.color != this.color) continue;
 			blob.attach(this);
@@ -61,7 +61,7 @@ class Blob{
 			[-1, 0],
 			[1, 0],
 			[0, -1]
-		].map(([x, y]) => Grid.get(this.x + x, this.y + y));
+		].map(([x, y]) => grid.get(this.x + x, this.y + y));
 		var barriers = [];
 		for(let blob of blobs) {
 			if(!blob || blob.color != -1) continue;
@@ -110,20 +110,20 @@ class Blob{
 		if(this.active) {
 			if(this.color == -1) {
 				var weights = [];
-				for(let i = 0; i < Grid.width; i++) {
-					weights.push(Grid.lowest(i) + 1);
+				for(let i = 0; i < grid.width; i++) {
+					weights.push(grid.lowest(i) + 1);
 				}
 				this.x = weight(weights);
 
 				this.active = false;
-				while(this.y + 1 < Grid.lowest(this.x)) {
+				while(this.y + 1 < grid.lowest(this.x)) {
 					this.y += 1;
 					drawBlobs();
-					await frame();
+					await gameUpdate();
 				}
-				this.y = Grid.height;
+				this.y = grid.height;
 
-				Grid.add(this);
+				grid.add(this);
 			}else{
 				if(keys.single("KeyE") || keys.single("ShiftRight")) {
 					var {list} = Color;
@@ -137,24 +137,24 @@ class Blob{
 				else this.y += deltaTime/500 * diffSpeed();// * (1 + gameTime/100000);
 
 				if(this.x < 0) this.x = 0;
-				if(this.x >= Grid.width) this.x = Grid.width - 1;
+				if(this.x >= grid.width) this.x = grid.width - 1;
 
 				if(keys.multi("KeyW") || keys.multi("ArrowUp")) {
 					this.active = false;
-					while(this.y + 1 < Grid.lowest(this.x)) {
+					while(this.y + 1 < grid.lowest(this.x)) {
 						this.y += 1 * diffSpeed();
 						drawBlobs();
-						await frame();
+						await gameUpdate();
 					}
-					this.y = Grid.height;
+					this.y = grid.height;
 				}
 
 				this.sx = scrollTo(this.sx, this.x, 0.1 * diffSpeed())
-				var y = Grid.lowest(this.x);
+				var y = grid.lowest(this.x);
 				this.bx = snapTo(this.bx, this.x, 0.5 * diffSpeed());
 				this.by = snapTo(this.by, y, 0.5 * diffSpeed());
 				if(!this.check(this.x)) {
-					Grid.add(this);
+					grid.add(this);
 				}
 			}
 		}

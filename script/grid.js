@@ -1,4 +1,4 @@
-var Grid = {
+class Grid{
 	async add(blob) {
 		var {height, array} = this;
 		var {x, y} = blob;
@@ -9,20 +9,20 @@ var Grid = {
 
 		blob.settle();
 		mainBlob = false;
-	},
+	}
 	lowest(x) {
-		for(var y = Grid.height - 1; y >= 0; --y) {
+		for(var y = grid.height - 1; y >= 0; --y) {
 			if(!this.get(x, y)) return y;
 		}
 		return y;
-	},
+	}
 	clean() {
 		var {array} = this;
 		for(let blob of array) {
 			if(!blob || !blob.inactive) continue;
 			delete array[array.indexOf(blob)];
 		}
-	},
+	}
 	async fall() {
 		var {width, height} = this;
 		var fall, moved, attach;
@@ -31,7 +31,7 @@ var Grid = {
 		function drawAdd() {
 			var amo = add();
 			if(amo) {
-				var x = Grid.width * scale + 1;
+				var x = grid.width * scale + 1;
 				
 				ctx.fillStyle = "green";
 				var h = innerHeight/20;
@@ -80,7 +80,7 @@ var Grid = {
 						blob.falling = false;
 					}
 					drawAdd();
-					await frame();
+					await gameUpdate();
 				}
 			}while(fall);
 			var poof;
@@ -99,26 +99,26 @@ var Grid = {
 			// }
 		}while(attach);
 		score += add();
-		update.lastFrame = Date.now();
-	},
+		main.lastFrame = Date.now();
+	}
 	/**@returns {Blob}*/
 	get(x, y) {
 		var {height, array} = this;
 		return array[y * height + x];
-	},
+	}
 	set(x, y, blob) {
 		var {height, array} = this;
 		array[y * height + x] = blob;
-	},
+	}
 	delete(x, y) {
 		var {height, array} = this;
 		delete array[y * height + x];
-	},
+	}
 	resizeCanvas() {
 		this.canvas.width = scale * this.width;
 		this.canvas.height = scale * this.height;
 		this.reDraw();
-	},
+	}
 	reDraw() {
 		var {canvas, ctx} = this;
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -126,13 +126,19 @@ var Grid = {
 			let blob = this.array[id];
 			if(!blob.falling) blob.draw(ctx);
 		}
-	},
+	}
+	constructor() {
+		var {canvas} = Grid;
+		this.canvas = canvas;
+		this.ctx = canvas.getContext("2d");
+	}
+	static canvas = document.createElement("canvas");
 	// get amount() {
 	// 	return this.array.filter(blob => blob).length;
 	// },
-	width: 6,
-	height: 12,
-	canvas: document.createElement("canvas"),
-	array: []
+	width = 6;
+	height = 12;
+	array = [];
 }
-Grid.ctx = Grid.canvas.getContext("2d");
+/**@type {Grid}*/
+var grid;

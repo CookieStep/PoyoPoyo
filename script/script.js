@@ -31,19 +31,14 @@ addEventListener("keypress", ({code}) => {
 	if(code == "Slash") songs.forEach(song => song.volume(-.1));
 	if(code == "Equal") songs.forEach(song => song.volume(.1));
 });
-// addEventListener("focus", () => update.lastFrame = Date.now());
-// var unpause = 0;
 addEventListener("blur", () => {
 	main.run = false;
-	// unpause = new Promise(resolve => {
-		var listener = () => {
-			removeEventListener("focus", listener);
-			main.lastFrame = Date.now();
-			main.run = true;
-			// resolve();
-		};
-		addEventListener("focus", listener);
-	// });
+	var listener = () => {
+		removeEventListener("focus", listener);
+		main.lastFrame = Date.now();
+		main.run = true;
+	};
+	addEventListener("focus", listener);
 });
 addEventListener("resize", resize);
 addEventListener("load", start);

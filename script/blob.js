@@ -163,7 +163,7 @@ class Blob{
 		var {bx, by, shape, sx, x, y} = this;
 		var color = Color.code[this.color];
 		if(this.active) {
-			ctx.setTransform(scale, 0, 0, scale, bx * scale, by * scale);
+			ctx.zoom(bx * scale, by * scale, scale, scale);
 			ctx.fillStyle = color + "a";
 			ctx.lineWidth = 1/100;
 			ctx.strokeStyle = "#000";
@@ -171,11 +171,9 @@ class Blob{
 			ctx.stroke(shape);
 			x = sx;
 		}
-		{
-			ctx.setTransform(scale, 0, 0, scale, x * scale, y * scale);
-			ctx.fillStyle = color;
-			ctx.fill(shape);
-		}
+		ctx.zoom(x * scale, y * scale, scale, scale);
+		ctx.fillStyle = color;
+		ctx.fill(shape);
 		if(this.dead) {
 			ctx.fillStyle = `rgba(255, 255, 255, ${this.dead})`;
 			ctx.fill(shape);

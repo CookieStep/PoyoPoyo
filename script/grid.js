@@ -27,18 +27,23 @@ class Grid{
 		var {width, height} = this;
 		var fall, moved, attach;
 		var colors = new Set, amount = 0, groups = new Set, over = 0, length = 0;
-		var add = () => round(length * amount * (colors.size + groups.size + over));
-		function drawAdd() {
+		var O = {size: 0};
+		var add = (l=0, a=0, c=O, g=O, o=0) => round((length + l) * (amount + a) * ((c.size || colors.size) + (g.size || groups.size) + over + o));
+		function drawAdd(l=0, a=0, c=O, g=O, o=0) {
 			var amo = add();
+			var x = grid.width * scale + 1;
+			
+			var h = innerHeight/20;
+			x += scale * .4;
+			ctx.font = `${h}px Arial`;
 			if(amo) {
-				var x = grid.width * scale + 1;
-				
 				ctx.fillStyle = "green";
-				var h = innerHeight/20;
-				x += scale * .4;
-				ctx.font = `${h}px Arial`;
-
 				ctx.fillText(`+${amo}`, x, h * 5.5);
+			}
+			if(l) {
+				var baa = add(l, a, new Set([...c, ...colors]), new Set([...g, ...groups]), o) - amo;
+				// ctx.fillStyle = "green";
+				ctx.fillText(`+${baa}`, x, h * 7);
 			}
 		}
 		do{

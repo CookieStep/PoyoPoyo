@@ -21,13 +21,12 @@ const Color = {
 	easy: [0, 1, 2, 3],
 	/**@readonly*/
 	normal: [0, 1, 2, 3, 4],
-	/**@readonly*/
-	all: "RBGPY",
 	next() {
 		var {list} = this
-		var set = diff < 2? this.easy: this.normal;;
+		var set = diff < 2? this.easy: this.normal;
+		var a = 6;
 
-		if(list.length <= 6) {
+		if(list.length <= a) {
 			var extra = [];
 
 			for(let i = 0, m = 5, l = 16 * m; i < l; i++) {
@@ -41,10 +40,13 @@ const Color = {
 
 			list.push(...extra.flat());
 		}
-		for(let i = 0; i < 8; i++) {
+		for(let i = 0; i <= a ** 2; i++) {
 			if(list[i] == -2) {
-				list[i] = new Array(diff? diff * 2 + 1: 0).fill(-1);
-			}else if(list[i] != -1 && set.indexOf(list[i]) == -1) list[i] = [];
+				var amo = diff? diff * 2 + 1: 0;
+				list[i] = new Array(amo).fill(-1);
+			}else if(list[i] != -1 && set.indexOf(list[i]) == -1) {
+				list[i] = [];
+			}
 		}
 		list = list.flat();
 		this.list = list;

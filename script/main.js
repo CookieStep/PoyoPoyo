@@ -6,6 +6,7 @@ async function main() {
     deltaTime = 0;
     gameTime = 0;
     ticks = 0;
+    diff = 0;
     resize();
 	while(true) {
 		if(!main.run) {
@@ -19,7 +20,7 @@ async function main() {
 		}
 		main.lastFrame = time;
 		ticks %= 100;
-		if(++ticks == 0) resize();
+		if(ticks++ == 0) resize();
 		music();
 		if(!mainBlob) {
 			await nextBlob();
@@ -58,13 +59,13 @@ async function Inactive(drawAdd) {
 		}
 		for(let i = 0; i < 20; i++) {
 			drawBlobs();
-			drawAdd();
+			drawAdd(1, gone.length, colors, groups, over);
 			for(let blob of gone) {
 				blob.dead = 1 - abs((i % itera) - itera/2)/itera * 2;
 				blob.draw(ctx);
 				if(i + 1 == 20) blobs.delete(blob);
 			}
-			await gameUpdate();
+            await gameUpdate();
 		}
 	}
 	var amount = gone.length;
@@ -104,7 +105,7 @@ function music() {
 var drawBlob = function() {
 	var shape = shapes.get("square-2");
 	return function(x, y, color) {
-		ctx.setTransform(scale, 0, 0, scale, x * scale, y * scale);
+		ctx.zoom(x * scale, y * scale, scale, scale);
 		ctx.fillStyle = Color.code[color];
 		ctx.fill(shape);
 		ctx.resetTransform();

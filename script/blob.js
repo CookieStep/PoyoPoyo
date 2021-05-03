@@ -2,38 +2,6 @@ class Blob{
 	constructor(color) {
 		this.color = color;
 		this.shape = shapes.get("square-2");
-		// this.texture = (new Texture()
-		// 	.set("h", 1)
-		// 	.set("w", 1)
-		// 	.use(this)
-		// 		.for("y")
-		// 	.link("x", () => {
-		// 		if(this.active) return this.sx;
-		// 		else return this.x;
-		// 	})
-		// 	.set("shape", shapes.get("square-2"))
-		// 	.link("fill", () => Color.code[this.color])
-		// );
-		// this.glow = (new Texture()
-		// 	.set("h", 1)
-		// 	.set("w", 1)
-		// 	.use(this)
-		// 		.for("x", "y")
-		// 	.set("shape", shapes.get("square-2"))
-		// 	.link("fill", () => `rgba(255, 255, 255, ${this.dead})`)
-		// );
-		// this.bottom = (new Texture()
-		// 	.set("h", 1)
-		// 	.set("w", 1)
-		// 	.use(this)
-		// 		.as(
-		// 			["bx", "x"],
-		// 			["by", "y"]
-		// 		)
-		// 	.set("shape", shapes.get("square-2"))
-		// 	.link("fill", () => Color.code[this.color] + "a")
-		// 	.set("stroke", "#000")
-		// );
 		this.x = round(grid.width/2);
 		this.by = grid.height;
 		this.sx = this.x;
@@ -127,7 +95,7 @@ class Blob{
 
 				grid.add(this);
 			}else{
-				if(keys.single("KeyE") || keys.single("ShiftRight")) {
+				if(keys.single("KeyF") || keys.single("ShiftRight")) {
 					var {list} = Color;
 					if(list[0] != -1) [list[0], this.color] = [this.color, list[0]];
 				}

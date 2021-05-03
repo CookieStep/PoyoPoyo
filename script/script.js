@@ -19,8 +19,8 @@ function start() {
 	update();
 }
 ctx.clear = () => {
-	ctx.fillStyle = "#fff";
-	ctx.fillRect(0, 0, innerWidth, innerHeight);
+	canvas.width = innerWidth;
+	canvas.height = innerHeight;
 };
 
 addEventListener("keydown", ({code}) => keys.press(code));

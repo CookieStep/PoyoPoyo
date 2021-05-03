@@ -7,18 +7,13 @@ async function main() {
     gameTime = 0;
     ticks = 0;
     diff = 0;
+	Color.list = [];
+	Color.list.unshift(Color.next());
     resize();
 	while(true) {
 		if(!main.run) {
 			await gameUpdate();
 		}
-		var time = Date.now();
-		var {lastFrame} = main;
-		if(lastFrame) {
-			deltaTime = time - lastFrame;
-			gameTime += deltaTime;
-		}
-		main.lastFrame = time;
 		ticks %= 100;
 		if(ticks++ == 0) resize();
 		music();
@@ -34,8 +29,9 @@ async function main() {
 		await gameUpdate();
 	}
 }
+main.speed = n => deltaTime * diffSpeed()/n;
 async function nextBlob() {
-	for(let a = 0; a < 10; a++) {
+	for(let a = 0; a < 10; a += main.speed(20)) {
 		drawBlobs(a/10);
 		await gameUpdate();
 	}
@@ -46,8 +42,6 @@ async function Inactive(drawAdd) {
 	var colors = new Set;
 	var over = 0;
 	if(gone.length) {
-		// console.log(gone);
-		// var loops = 1;
 		var itera = 40;
 		for(let blob of gone) {
 			colors.add(blob.color);
@@ -57,13 +51,13 @@ async function Inactive(drawAdd) {
 				over += group.size - 4;
 			}
 		}
-		for(let i = 0; i < 20; i++) {
+		for(let i = 0; i < 20; i += main.speed(10)) {
 			drawBlobs();
 			drawAdd(1, gone.length, colors, groups, over);
 			for(let blob of gone) {
 				blob.dead = 1 - abs((i % itera) - itera/2)/itera * 2;
 				blob.draw(ctx);
-				if(i + 1 == 20) blobs.delete(blob);
+                blobs.delete(blob);
 			}
             await gameUpdate();
 		}
@@ -115,6 +109,8 @@ var score = 0;
 function drawBlobs(a=0) {
 	ctx.clear();
 	var x = grid.width * scale + 1;
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
 	ctx.moveTo(x, 0);
 	ctx.lineTo(x, innerHeight);
 	ctx.stroke();
@@ -135,10 +131,8 @@ function drawBlobs(a=0) {
 	ctx.fillText(`${score}`, x, h * 4);
 };
 function resize() {
-	assign(canvas, {
-		width: innerWidth,
-		height: innerHeight
-	});
+	canvas.width = innerWidth;
+	canvas.height = innerHeight;
 	if(grid) {
         scale = innerHeight/grid.height;
 	    grid.resizeCanvas();

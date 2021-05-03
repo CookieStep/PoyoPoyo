@@ -40,21 +40,26 @@ const Color = {
 
 			list.push(...extra.flat());
 		}
-		for(let i = 0; i <= a ** 2; i++) {
-			if(list[i] == -2) {
-				var amo = diff? diff * 2 + 1: 0;
-				list[i] = new Array(amo).fill(-1);
-			}else if(list[i] != -1 && set.indexOf(list[i]) == -1) {
-				list[i] = [];
+		do{
+			var cau = false;
+			for(let c = 0, b = min(a, list.length); c <= b; c++) {
+				let b = (list[c] == -2 && 1) || (list[c] != -1 && set.indexOf(list[c]) == -1 && 2);
+				if(b) {
+					cau = true;
+					if(b - 1) {
+						list[c] = [];
+					}else{
+						list[c] = new Array(diff? diff * 2 + 1: 0).fill(-1);
+					}
+					break;
+				}
 			}
-		}
-		list = list.flat();
+			list = list.flat();
+		}while(cau);
 		this.list = list;
 
 		return list.shift();
 	},
-	weights: [],
-	uses: [],
 	list: []
 }
 Color.code[-1] = "#555";

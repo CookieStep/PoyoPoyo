@@ -19,6 +19,7 @@ var {
 	abs,
 	sign,
 	max,
+	min,
 	PI
 } = Math;
 

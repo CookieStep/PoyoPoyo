@@ -117,7 +117,9 @@ class Blob{
 
 				this.active = false;
 				while(this.y + 1 < grid.lowest(this.x)) {
-					this.y += 1;
+					let a = main.speed(10);
+					this.f += a * .3;
+					this.y += a/5 * this.f;
 					drawBlobs();
 					await gameUpdate();
 				}
@@ -133,8 +135,8 @@ class Blob{
 				if(keys.multi("ArrowRight") && this.check(this.x + 1)) ++this.x;
 				if(keys.multi("KeyA") && this.check(this.x - 1)) --this.x;
 				if(keys.multi("ArrowLeft") && this.check(this.x - 1)) --this.x;
-				if(keys.has("KeyS") || keys.has("ArrowDown")) this.y += deltaTime/50 * diffSpeed();// * (1 + gameTime/100000);
-				else this.y += deltaTime/500 * diffSpeed();// * (1 + gameTime/100000);
+				if(keys.has("KeyS") || keys.has("ArrowDown")) this.y += main.speed(50);// * (1 + gameTime/100000);
+				else this.y += main.speed(500);// * (1 + gameTime/100000);
 
 				if(this.x < 0) this.x = 0;
 				if(this.x >= grid.width) this.x = grid.width - 1;
@@ -142,17 +144,20 @@ class Blob{
 				if(keys.multi("KeyW") || keys.multi("ArrowUp")) {
 					this.active = false;
 					while(this.y + 1 < grid.lowest(this.x)) {
-						this.y += 1 * diffSpeed();
+						let a = main.speed(10);
+						this.f += a * .3;
+						this.y += a/5 * this.f;
 						drawBlobs();
 						await gameUpdate();
 					}
+					this.f = 0;
 					this.y = grid.height;
 				}
 
-				this.sx = scrollTo(this.sx, this.x, 0.1 * diffSpeed())
+				this.sx = scrollTo(this.sx, this.x, main.speed(250))
 				var y = grid.lowest(this.x);
-				this.bx = snapTo(this.bx, this.x, 0.5 * diffSpeed());
-				this.by = snapTo(this.by, y, 0.5 * diffSpeed());
+				this.bx = snapTo(this.bx, this.x, main.speed(50));
+				this.by = snapTo(this.by, y, main.speed(50));
 				if(!this.check(this.x)) {
 					grid.add(this);
 				}

@@ -9,6 +9,7 @@ class Grid{
 
 		blob.settle();
 		mainBlob = false;
+		this.reDraw();
 	}
 	lowest(x) {
 		for(var y = grid.height - 1; y >= 0; --y) {
@@ -52,6 +53,7 @@ class Grid{
 			this.clean();
 			let {groups: gc, amount: ac, colors: cc, over: oc} = await Inactive(drawAdd);
 			if(ac) {
+				this.reDraw();
 				colors = new Set([...cc, ...colors]);
 				groups = new Set([...gc, ...groups]);
 				amount += ac;
@@ -67,41 +69,48 @@ class Grid{
 						if(blob && !this.get(x, y + 1)) {
 							fall = true;
 							attach = true;
-							blob.falling = true;
+							blob.t = y + 1;
 							blob.unattach();
 							moved.add(blob);
 							mov.add(blob);
 							this.delete(x, y);
+							blob.falling = true;
 							this.set(x, y + 1, blob);
 						}
 					}
 				}
-				this.reDraw();
-				if(fall) for(let i = 0; i < 5; i++) {
-					drawBlobs();
-					for(let blob of mov) {
-						blob.y += .2;
-						blob.draw(ctx);
-						blob.falling = false;
-					}
-					drawAdd();
-					await gameUpdate();
+				if(fall) {
+					this.reDraw();
+					let fall;
+					do{
+						let a = main.speed(20);
+						fall = false;
+						drawBlobs();
+						for(let blob of mov) {
+							blob.f += .3 * a;
+							blob.y += a/5 * blob.f;
+							if(blob.y > blob.t) {
+								blob.y = blob.t;
+							}else fall = true;
+							blob.draw(ctx);
+							blob.falling = false;
+						}
+						drawAdd();
+						await gameUpdate();
+					}while(fall);
 				}
 			}while(fall);
 			var poof;
 			for(let blob of moved) {
-				blob.y = round(blob.y);
+				blob.y = blob.t;
+				blob.f = 0;
 				blob.settle() && (poof = true);
 				attach = true;
 				blob.falling = false;
 			}
-			this.reDraw();
+			if(attach) this.reDraw();
 			drawBlobs();
 			drawAdd();
-			// if(poof) {
-			// 	await delay(100);
-			// 	console.log("Poof");
-			// }
 		}while(attach);
 		score += add();
 		main.lastFrame = Date.now();
@@ -120,9 +129,13 @@ class Grid{
 		delete array[y * height + x];
 	}
 	resizeCanvas() {
-		this.canvas.width = scale * this.width;
-		this.canvas.height = scale * this.height;
+		this._resizeCanvas();
 		this.reDraw();
+	}
+	_resizeCanvas() {
+		var {canvas, width, height} = this;
+		canvas.width = scale * width;
+		canvas.height = scale * height;
 	}
 	reDraw() {
 		var {canvas, ctx} = this;

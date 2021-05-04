@@ -46,4 +46,10 @@ var pauseMenu = {
 	resize() {
 		delete this.canvas;
 	}
+};
+var mainMenu = {
+	run: true,
+	draw() {
+		
+	}
 }

@@ -57,7 +57,7 @@ class Blob{
 	settle() {
 		if(this.color == Color.barrier) return;
 		if(this.color == Color.zombie) {
-			this.explode().forEach(blob => blob.zombify());
+			this.explode().forEach(blob => (blob.zombify(), blob.attach(this)));
 		}else{
 			var blobs = [
 				[0, 1],
@@ -90,7 +90,6 @@ class Blob{
 		return barriers;
 	}
 	attach(blob) {
-		if(this.color == Color.zombie) ;
 		if(this.color != Color.barrier) {
 			var {group} = this;
 			if(!group) {
@@ -107,6 +106,13 @@ class Blob{
 				}
 			}
 			if(group.size >= 4) {
+				var allZom = true,
+					hasZom = false;
+				for(let blob of group) {
+					if(blob.color == Color.zombie) hasZom = true;
+					else allZom = false;
+				}
+				if(allZom) return;
 				/**@type {Blob[][]}*/
 				var barriers = [];
 				for(let blob of group) {

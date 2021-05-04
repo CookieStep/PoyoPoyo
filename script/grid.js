@@ -100,11 +100,10 @@ class Grid{
 					}while(fall);
 				}
 			}while(fall);
-			var poof;
 			for(let blob of moved) {
 				blob.y = blob.t;
 				blob.f = 0;
-				blob.settle() && (poof = true);
+				blob.settle();
 				attach = true;
 				blob.falling = false;
 			}

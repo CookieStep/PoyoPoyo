@@ -1,4 +1,5 @@
 async function main() {
+	if(main.running) return;
 	main.run = true;
     main.running = true;
     grid = new Grid;
@@ -20,11 +21,12 @@ async function main() {
 		if(!mainBlob) {
 			await nextBlob();
 			new Blob(Color.next());
+			if(mainBlob.y >= grid.lowest(mainBlob.x)) {
+				blobs.delete(mainBlob);
+				mainBlob = undefined;
+			}
 		}
-		if(mainBlob.y >= grid.lowest(mainBlob.x)) {
-			blobs.delete(mainBlob);
-			mainBlob = undefined;
-		}else await mainBlob.update();
+		if(mainBlob)await mainBlob.update();
 		await grid.fall();
 		await gameUpdate();
 	}
@@ -69,7 +71,8 @@ function diffSpeed() {
 	var speeds = [
 		1,
 		1.2,
-		1.5
+		1.5,
+		2
 	];
 	return speeds[diff];
 }
@@ -81,13 +84,16 @@ function music() {
 	if(gameTime < 100000) {
 		diff = 0;
 		song = songs.get("Level1");
-	}else if(gameTime < 200000){
+	}else if(gameTime < 200000) {
 		diff = 1;
 		song = songs.get("Level2");
 		songs.stop("Level1");
-	}else{
+	}else if(gameTime < 300000) {
 		song = songs.get("Level2");
 		diff = 2;
+	}else{
+		song = songs.get("Level2");
+		diff = 3;
 	}
 	song.play();
 	if(!song.H && blobs.size > 45) {

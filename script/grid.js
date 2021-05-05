@@ -36,7 +36,7 @@ class Grid{
 			
 			var h = innerHeight/20;
 			x += scale * .4;
-			ctx.font = `${h}px Arial`;
+			ctx.font = `${h}px Josefin Sans`;
 			if(amo) {
 				ctx.fillStyle = "green";
 				ctx.fillText(`+${amo}`, x, h * 5.5);
@@ -143,6 +143,10 @@ class Grid{
 			let blob = this.array[id];
 			if(!blob.falling) blob.draw(ctx);
 		}
+		if(multiplayer) multiplayer.updateGrid();
+	}
+	import(grid) {
+		this.array = assign([], grid);
 	}
 	constructor() {
 		var {canvas} = Grid;

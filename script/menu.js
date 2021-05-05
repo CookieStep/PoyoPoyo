@@ -68,7 +68,7 @@ var mainMenu = {
 		var ctx = this.canvas.getContext("2d");
 		var i = 0, h = height/12;
 		this.h = h;
-		ctx.font = `${h}px Arial`;
+		ctx.font = `${h}px Josefin Sans`;
 		var mw = 0;
 		for(let {text} of this.list) {
 			let {width: w} = ctx.measureText(text);
@@ -115,7 +115,7 @@ var mainMenu = {
 			color: "#f55",
 			use() {
 				mainMenu.close();
-				multiplayer.startup();
+				multiplayer = new Multiplayer;
 			}
 		},
 		{

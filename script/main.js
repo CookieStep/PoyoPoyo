@@ -26,7 +26,7 @@ async function main() {
 				mainBlob = undefined;
 			}
 		}
-		if(mainBlob)await mainBlob.update();
+		if(mainBlob) await mainBlob.update();
 		await grid.fall();
 		await gameUpdate();
 	}
@@ -120,6 +120,10 @@ function drawBlobs(a=0) {
 	ctx.moveTo(x, 0);
 	ctx.lineTo(x, innerHeight);
 	ctx.stroke();
+	if(multiplayer) {
+		let grid = multiplayer.enemyGrid;
+		ctx.drawImage(grid.canvas, innerWidth - grid.canvas.width, 0);
+	}
 	ctx.drawImage(grid.canvas, 0, 0);
 	if(mainBlob) mainBlob.draw(ctx);
 	for(let i = 4 + ceil(a); i >= 0; i--) {
@@ -130,7 +134,7 @@ function drawBlobs(a=0) {
 	ctx.fillStyle = "black";
 	var h = innerHeight/20;
 	x += scale * .4;
-	ctx.font = `${h}px Arial`;
+	ctx.font = `${h}px Josefin Sans`;
 	ctx.fillText(`${frameRate}ms`, x, innerHeight - h/2);
 	ctx.fillText(`${round(10000/frameRate)/10}fps`, x, innerHeight - h * 3/2);
 	ctx.fillText(`Level ${diff + 1}`, x, innerHeight - h * 5/2);

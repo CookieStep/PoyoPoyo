@@ -43,22 +43,26 @@ const Color = {
 		var a = 6;
 
 		if(list.length <= a) {
-			var extra = [];
+			if(multiplayer?.active) {
+				list.push(...multiplayer.colors);
+			}else{
+				var extra = [];
 
-			for(let i = 0, m = 5, l = 16 * m; i < l; i++) {
-				extra.push(i % m);
-			}
-			for(let i = 0; i < 4; i++) {
-				extra.push(barrierSpawn);
-				extra.push(zombieSpawn);
-			}
-			for(let i = 0; i < 4; i++) {
-				extra.push(rainbow);
-			}
+				for(let i = 0, m = 5, l = 16 * m; i < l; i++) {
+					extra.push(i % m);
+				}
+				for(let i = 0; i < 4; i++) {
+					extra.push(barrierSpawn);
+					extra.push(zombieSpawn);
+				}
+				for(let i = 0; i < 4; i++) {
+					extra.push(rainbow);
+				}
 
-			extra = shuffle(extra);
+				extra = shuffle(extra);
 
-			list.push(...extra.flat());
+				list.push(...extra.flat());
+			}
 		}
 		do{
 			var cau = false;

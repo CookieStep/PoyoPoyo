@@ -1,9 +1,15 @@
-var multiplayer = {
+class Multiplayer {
 	async run() {
 		if(this.running) return;
 		this.running = true;
 		if(this.room) {
-			ctx.clear();
+			if(this.inGame) main();
+			else{
+				ctx.clear();
+				ctx.fillStyle = "black";
+				ctx.font = `${scale}px Arial`;
+				ctx.fillText("Waiting for opponent...", 0, innerHeight);
+			}
 		}else if(this.canvas) {
 			ctx.clear();
 			ctx.drawImage(this.canvas, 0, 0);
@@ -25,15 +31,18 @@ var multiplayer = {
 			this.selected %= this.list.length;
 		}
 		this.running = false;
-	},
-	selected: 0,
+	}
+	selected = 0;
+	constructor() {
+		this.startup();
+	}
 	async startup() {
 		this.name = prompt("Enter a name");
 		delete this.room;
 		this.active = true;
 		await this.connect();
 		this.sendData({games: 1});
-	},
+	}
 	connect() {
 		var ws = new WebSocket("wss://poyoserver.cookiexe.repl.co");
 		this.ws = ws;
@@ -44,7 +53,7 @@ var multiplayer = {
 			};
 			ws.onerror = reject;
 		});
-	},
+	}
 	setupWs() {
 		var {ws} = this;
 		this.connected = true;
@@ -58,8 +67,8 @@ var multiplayer = {
 		ws.onerror = disconnect;
 		ws.onclose = disconnect;
 		ws.onmessage = onData;
-	},
-	onData({games, room}) {
+	}
+	onData({games, room, colors, updateGrid}) {
 		if(games) {
 			this.rooms = new Set(games);
 			this.makeRoomList();
@@ -68,7 +77,15 @@ var multiplayer = {
 		if(room) {
 			this.room = room;
 		}
-	},
+		if(colors) {
+			this.colors = colors;
+			this.inGame = true;
+			this.enemyGrid = new Grid;
+		}
+		if(updateGrid) {
+			this.enemyGrid.import(updateGrid);
+		}
+	}
 	makeRoomList() {
 		var createRoom = () => this.createRoom();
 		var joinRoom = room => this.joinRoom(room);
@@ -90,20 +107,29 @@ var multiplayer = {
 			});
 		}
 		this.list = list;
-	},
-	drawRoomList: mainMenu.draw,
+	}
+	drawRoomList =  mainMenu.draw;
+	updateGrid() {
+		this.sendData({grid: grid.array});
+	}
 	createRoom() {
 		this.sendData({createRoom: `${this.name}'s game`});
-	},
+	}
 	joinRoom(room) {
 		this.sendData({joinRoom: room.name});
-	},
+	}
 	sendData(data) {
 		this.ws.send(JSON.stringify(data));
-	},
-	connected: false,
+	}
+	/**@type {number[]}*/
+	colors = 0;
+	connected = false;
 	/**@type {Promise<void>}*/
-	reconnect: 0,
+	reconnect = 0;
 	/**@type {WebSocket}*/
-	ws: 0
+	ws;
+	/**@type {Grid}*/
+	enemyGrid;
 }
+/**@type {Multiplayer}*/
+var multiplayer;

@@ -71,7 +71,7 @@ class Multiplayer {
 		ws.onclose = disconnect;
 		ws.onmessage = onData;
 	}
-	onData({games, room, colors, updateGrid}) {
+	onData({games, room, colors, updateGrid, error}) {
 		if(games) {
 			this.rooms = new Set(games);
 			this.makeRoomList();
@@ -85,6 +85,9 @@ class Multiplayer {
 			this.inGame = true;
 			this.enemyGrid = new Grid;
 			this.enemyGrid.mainGrid = false;
+		}
+		if(error) {
+			alert(error);
 		}
 		if(updateGrid) {
 			this.enemyGrid.import(updateGrid);

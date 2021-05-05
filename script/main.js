@@ -77,29 +77,33 @@ function diffSpeed() {
 	return speeds[diff];
 }
 function music() {
-	var song;
-	// }else{
-	// 	song = songs.get("Level2");
-	// 	songs.stop("Level1");
-	if(gameTime < 100000) {
-		diff = 0;
-		song = songs.get("Level1");
-	}else if(gameTime < 200000) {
-		diff = 1;
-		song = songs.get("Level2");
-		songs.stop("Level1");
-	}else if(gameTime < 300000) {
-		song = songs.get("Level2");
-		diff = 2;
+	if(!multiplayer) {
+		var song;
+		// }else{
+		// 	song = songs.get("Level2");
+		// 	songs.stop("Level1");
+		if(gameTime < 100000) {
+			diff = 0;
+			song = songs.get("Level1");
+		}else if(gameTime < 200000) {
+			diff = 1;
+			song = songs.get("Level2");
+			songs.stop("Level1");
+		}else if(gameTime < 300000) {
+			song = songs.get("Level2");
+			diff = 2;
+		}else{
+			song = songs.get("Level2");
+			diff = 3;
+		}
+		song.play();
+		if(!song.H && blobs.size > 45) {
+			song.switch(true);
+		}else if(song.H && blobs.size < 35) {
+			song.switch(false)
+		}
 	}else{
-		song = songs.get("Level2");
-		diff = 3;
-	}
-	song.play();
-	if(!song.H && blobs.size > 45) {
-		song.switch(true);
-	}else if(song.H && blobs.size < 35) {
-		song.switch(false)
+		
 	}
 }
 var drawBlob = function() {

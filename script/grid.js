@@ -137,16 +137,22 @@ class Grid{
 		canvas.height = scale * height;
 	}
 	reDraw() {
-		var {canvas, ctx} = this;
+		var {canvas, ctx, height} = this;
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		for(let id in this.array) {
 			let blob = this.array[id];
-			if(!blob.falling) blob.draw(ctx);
+			if(typeof blob == "number") {
+				var x = id % height;
+				var y = (id - x)/height;
+				drawBlob(x, y, Color.code[blob], ctx);
+			}else{
+				if(!blob.falling) blob.draw(ctx);
+			}
 		}
 		if(multiplayer) multiplayer.updateGrid();
 	}
 	import(grid) {
-		this.array = assign([], grid);
+		this.array = assign([], grid[1]);
 	}
 	constructor() {
 		var {canvas} = Grid;

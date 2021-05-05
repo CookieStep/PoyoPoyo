@@ -30,16 +30,16 @@ addEventListener("keypress", ({code}) => {
 	if(code == "Slash") songs.forEach(song => song.volume(-.1));
 	if(code == "Equal") songs.forEach(song => song.volume(.1));
 });
-addEventListener("blur", () => {
-	if(main.running) {
-		main.run = false;
-		var listener = () => {
-			removeEventListener("focus", listener);
-			main.lastFrame = Date.now();
-			main.run = true;
-		};
-		addEventListener("focus", listener);
-	}
-});
+// addEventListener("blur", () => {
+// 	if(main.running) {
+// 		main.run = false;
+// 		var listener = () => {
+// 			removeEventListener("focus", listener);
+// 			main.lastFrame = Date.now();
+// 			main.run = true;
+// 		};
+// 		addEventListener("focus", listener);
+// 	}
+// });
 addEventListener("resize", resize);
 addEventListener("load", start);

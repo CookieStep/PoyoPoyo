@@ -103,8 +103,9 @@ function music() {
 	}
 }
 var drawBlob = function() {
+	var mctx = () => ctx;
 	var shape = shapes.get("square-2");
-	return function(x, y, color) {
+	return function(x, y, color, ctx=mctx()) {
 		ctx.zoom(x * scale, y * scale, scale, scale);
 		ctx.fillStyle = Color.code[color];
 		ctx.fill(shape);
@@ -121,8 +122,8 @@ function drawBlobs(a=0) {
 	ctx.lineTo(x, innerHeight);
 	ctx.stroke();
 	if(multiplayer) {
-		let grid = multiplayer.enemyGrid;
-		ctx.drawImage(grid.canvas, innerWidth - grid.canvas.width, 0);
+		let grid = multiplayer.enemyGrid.canvas;
+		ctx.drawImage(grid, innerWidth - grid.width, 0);
 	}
 	ctx.drawImage(grid.canvas, 0, 0);
 	if(mainBlob) mainBlob.draw(ctx);

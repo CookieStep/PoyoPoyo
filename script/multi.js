@@ -60,7 +60,10 @@ class Multiplayer {
 		var onData = ev => {
 			var data;
 			try{data = JSON.parse(ev.data)}catch(err) {console.error(err)}
-			if(data) this.onData(data);
+			if(data) {
+				console.log(data);
+				this.onData(data);
+			}
 		};
 		var disconnect = () => this.connected = false;
 
@@ -110,7 +113,11 @@ class Multiplayer {
 	}
 	drawRoomList =  mainMenu.draw;
 	updateGrid() {
-		this.sendData({grid: grid.array});
+		var array = {};
+		for(let i in grid.array) {
+			array[i] = grid.array[i].color;
+		}
+		this.sendData({grid: array});
 	}
 	createRoom() {
 		this.sendData({createRoom: `${this.name}'s game`});
@@ -121,6 +128,8 @@ class Multiplayer {
 	sendData(data) {
 		this.ws.send(JSON.stringify(data));
 	}
+	/**@type {Grid}*/
+	enemyGrid
 	/**@type {number[]}*/
 	colors = 0;
 	connected = false;

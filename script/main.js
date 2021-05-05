@@ -19,6 +19,7 @@ async function main() {
 		if(ticks++ == 0) resize();
 		music();
 		if(!mainBlob) {
+			if(multiplayer) await multiplayer.dropBad();
 			await nextBlob();
 			new Blob(Color.next());
 			if(mainBlob.y >= grid.lowest(mainBlob.x)) {

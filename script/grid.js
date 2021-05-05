@@ -10,7 +10,6 @@ class Grid{
 		blob.settle();
 		mainBlob = false;
 		this.reDraw();
-		if(multiplayer) await multiplayer.dropBad();
 	}
 	lowest(x) {
 		for(var y = grid.height - 1; y >= 0; --y) {

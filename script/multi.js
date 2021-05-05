@@ -81,6 +81,9 @@ class Multiplayer {
 			this.room = room;
 		}
 		if(colors) {
+			Color.list = [];
+			blobs = new Set;
+			grid.array = [];
 			this.colors = colors;
 			this.inGame = true;
 			this.enemyGrid = new Grid;

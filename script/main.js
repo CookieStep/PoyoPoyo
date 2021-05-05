@@ -30,7 +30,6 @@ async function main() {
 		}
 		if(mainBlob) await mainBlob.update();
 		await grid.fall();
-		if(multiplayer) await multiplayer.dropBad();
 		await gameUpdate();
 	}
 }

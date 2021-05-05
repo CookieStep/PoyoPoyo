@@ -20,6 +20,10 @@ const Color = {
 	/**@readonly*/
 	barrier: -1,
 	/**@readonly*/
+	barrier2: -6,
+	/**@readonly*/
+	barrier3: -7,
+	/**@readonly*/
 	barrierSpawn: -2,
 	/**@readonly*/
 	rainbow: -3,
@@ -113,3 +117,5 @@ const Color = {
 	Color.code[Color.zombie] = "#5a5";
 }
 Color.code[Color.barrier] = "#555";
+Color.code[Color.barrier2] = "#733";
+Color.code[Color.barrier3] = "#a00";

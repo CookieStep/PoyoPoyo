@@ -71,7 +71,7 @@ class Multiplayer {
 		ws.onclose = disconnect;
 		ws.onmessage = onData;
 	}
-	onData({games, room, colors, updateGrid, error}) {
+	onData({games, room, colors, updateGrid, error, bad, place, x}) {
 		if(games) {
 			this.rooms = new Set(games);
 			this.makeRoomList();
@@ -86,11 +86,21 @@ class Multiplayer {
 			this.enemyGrid = new Grid;
 			this.enemyGrid.mainGrid = false;
 		}
+		if(place && grid) {
+			if(this.eneBlob) this.eneBlob.color = this.colors[place[1]];
+			else this.eneBlob = new Blob(this.colors[place[1]]);
+		}
+		if(x) {
+			this.eneBlob.x = x[1];
+		}
 		if(error) {
 			alert(error);
 		}
 		if(updateGrid) {
 			this.enemyGrid.import(updateGrid);
+		}
+		if(bad) {
+			this.badCount += bad[1];
 		}
 	}
 	makeRoomList() {
@@ -130,8 +140,72 @@ class Multiplayer {
 		this.sendData({joinRoom: room.name});
 	}
 	sendData(data) {
+		console.log(data);
 		this.ws.send(JSON.stringify(data));
 	}
+	sendBad(num) {
+		this.sendData({bad: ceil(num ** .5)});
+	}
+	sendX() {
+		this.sendData({x: mainBlob.x});
+	}
+	badCount = 0;
+	drawBad() {
+		var i = 0;
+		var count = this.badCount;
+		var sx = grid.width + .3;
+		var coord = () => {
+			var m = 6;
+			var x = i % m;
+			var y = (i - x)/m;
+			i++;
+			return [x, y];
+		};
+		while(count > 35) {
+			let [x, y] = coord();
+			drawBlob(sx + x * 1.3, grid.height - 2.5 + y * 1.3, Color.barrier2);
+			count -= 36;
+		}
+		while(count > 5) {
+			let [x, y] = coord();
+			drawBlob(sx + x * 1.3, grid.height - 2.5 + y * 1.3, Color.barrier2);
+			count -= 6;
+		}
+		while(count > 0) {
+			let [x, y] = coord();
+			drawBlob(sx + x * 1.3, grid.height - 2.5 + y * 1.3, Color.barrier);
+			count -= 1;
+		}
+	}
+	async dropBad() {
+		if(!this.badCount) return;
+		var count = this.badCount;
+		var barriers = [];
+		while(count > 5) {
+			for(let i = 0; i < 6; i++) {
+				var barrier = new Blob(Color.barrier);
+				barrier.x = i;
+				barriers.push(barrier.update());
+			}
+			count -= 6;
+		}
+		var spots = [0, 1, 2, 3, 4, 5].sort(() => random() - .5);
+		while(count > 0) {
+			var barrier = new Blob(Color.barrier);
+			barrier.x = spots.pop();
+			barriers.push(barrier.update());
+			count -= 1;
+		}
+		await Promise.all(barriers);
+	}
+	updatePlace() {
+		this.sendData({place: this.place});
+	}
+	get place() {
+		return this.colors.length - Color.list.length % this.colors.length;
+	}
+	/**@type {number}*/
+	eplace;
 	/**@type {Grid}*/
 	enemyGrid
 	/**@type {number[]}*/

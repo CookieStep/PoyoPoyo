@@ -24,10 +24,13 @@ async function main() {
 			if(mainBlob.y >= grid.lowest(mainBlob.x)) {
 				blobs.delete(mainBlob);
 				mainBlob = undefined;
+			}else if(multiplayer) {
+				multiplayer.updatePlace();
 			}
 		}
 		if(mainBlob) await mainBlob.update();
 		await grid.fall();
+		if(multiplayer) await multiplayer.dropBad();
 		await gameUpdate();
 	}
 }
@@ -103,7 +106,7 @@ function music() {
 			song.switch(false)
 		}
 	}else{
-		
+
 	}
 }
 var drawBlob = function() {
@@ -128,6 +131,10 @@ function drawBlobs(a=0) {
 	if(multiplayer) {
 		let grid = multiplayer.enemyGrid.canvas;
 		ctx.drawImage(grid, innerWidth - grid.width, 0);
+		let x = innerWidth - (grid.width + 1);
+		ctx.moveTo(x, 0);
+		ctx.lineTo(x, innerHeight);
+		ctx.stroke();
 	}
 	ctx.drawImage(grid.canvas, 0, 0);
 	if(mainBlob) mainBlob.draw(ctx);
@@ -135,6 +142,9 @@ function drawBlobs(a=0) {
 		if(i == 0) drawBlob(grid.width + .3 + i * 1.3, .3 - (a * 1.3), Color.list[i]);
 		else if(i != 5) drawBlob(grid.width + .3 + (i - a) * 1.3, .3, Color.list[i]);
 		else drawBlob(grid.width + .3 + (i - 1) * 1.3, .3, Color.list[i]);
+	}
+	if(multiplayer) {
+		multiplayer.drawBad();
 	}
 	ctx.fillStyle = "black";
 	var h = innerHeight/20;

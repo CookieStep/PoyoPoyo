@@ -133,15 +133,19 @@ class Blob{
 			group.delete(this);
 		}
 	}
+	pickX() {
+		var weights = [];
+		for(let i = 0; i < grid.width; i++) {
+			weights.push((grid.lowest(i) + 1) ** 2);
+		}
+		this.x = weight(weights);
+	}
 	async update() {
 		if(this.active) {
 			if(this.color == Color.barrier || this.color == Color.zombie) {
-				var weights = [];
-				for(let i = 0; i < grid.width; i++) {
-					weights.push((grid.lowest(i) + 1) ** 2);
+				if(!multiplayer) {
+					this.pickX();
 				}
-				this.x = weight(weights);
-
 				this.active = false;
 				while(this.y + 1 < grid.lowest(this.x)) {
 					let a = main.speed(10);
@@ -159,15 +163,32 @@ class Blob{
 					var {list} = Color;
 					if(list[0] != Color.barrier && list[0] != Color.zombie) [list[0], this.color] = [this.color, list[0]];
 				}
-				if(keys.multi("KeyD") && this.slip(this.x + 1)) ++this.x;
-				if(keys.multi("ArrowRight") && this.slip(this.x + 1)) ++this.x;
-				if(keys.multi("KeyA") && this.slip(this.x - 1)) --this.x;
-				if(keys.multi("ArrowLeft") && this.slip(this.x - 1)) --this.x;
+				var moved;
+				if(keys.multi("KeyD") && this.slip(this.x + 1)) {
+					++this.x;
+					moved = true;
+				}
+				if(keys.multi("ArrowRight") && this.slip(this.x + 1)) {
+					++this.x;
+					moved = true;
+				}
+				if(keys.multi("KeyA") && this.slip(this.x - 1)) {
+					--this.x;
+					moved = true;
+				}
+				if(keys.multi("ArrowLeft") && this.slip(this.x - 1)) {
+					--this.x;
+					moved = true;
+				}
 				if(keys.has("KeyS") || keys.has("ArrowDown")) this.y += main.speed(50);// * (1 + gameTime/100000);
 				else this.y += main.speed(500);// * (1 + gameTime/100000);
 
 				if(this.x < 0) this.x = 0;
 				if(this.x >= grid.width) this.x = grid.width - 1;
+				
+				if(moved && multiplayer) {
+					multiplayer.sendX();
+				}
 
 				if(keys.multi("KeyW") || keys.multi("ArrowUp")) {
 					this.active = true;

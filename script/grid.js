@@ -111,7 +111,11 @@ class Grid{
 			drawBlobs();
 			drawAdd();
 		}while(attach);
-		score += add();
+		var num = add();
+		if(num) {
+			score += num;
+			if(multiplayer) multiplayer.sendBad(num);
+		}
 		main.lastFrame = Date.now();
 	}
 	/**@returns {Blob}*/

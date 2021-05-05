@@ -148,6 +148,9 @@ function resize() {
 	if(grid) {
         scale = innerHeight/grid.height;
 	    grid.resizeCanvas();
+		if(multiplayer) {
+			multiplayer.enemyGrid.resizeCanvas();
+		}
     }else{
         scale = 40;
     }

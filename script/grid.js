@@ -144,28 +144,28 @@ class Grid{
 			if(typeof blob == "number") {
 				var x = id % height;
 				var y = (id - x)/height;
-				drawBlob(x, y, Color.code[blob], ctx);
+				drawBlob(x, y, blob, ctx);
 			}else{
 				if(!blob.falling) blob.draw(ctx);
 			}
 		}
-		if(multiplayer) multiplayer.updateGrid();
+		if(multiplayer && this.mainGrid) multiplayer.updateGrid();
 	}
 	import(grid) {
 		this.array = assign([], grid[1]);
+		this.reDraw();
 	}
 	constructor() {
-		var {canvas} = Grid;
-		this.canvas = canvas;
-		this.ctx = canvas.getContext("2d");
+		this.canvas = document.createElement("canvas");
+		this.ctx = this.canvas.getContext("2d");
 	}
-	static canvas = document.createElement("canvas");
 	// get amount() {
 	// 	return this.array.filter(blob => blob).length;
 	// },
 	width = 6;
 	height = 12;
 	array = [];
+	mainGrid = true;
 }
 /**@type {Grid}*/
 var grid;

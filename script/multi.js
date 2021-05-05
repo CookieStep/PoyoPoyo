@@ -84,6 +84,7 @@ class Multiplayer {
 			this.colors = colors;
 			this.inGame = true;
 			this.enemyGrid = new Grid;
+			this.enemyGrid.mainGrid = false;
 		}
 		if(updateGrid) {
 			this.enemyGrid.import(updateGrid);

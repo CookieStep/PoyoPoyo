@@ -147,7 +147,7 @@ class Multiplayer {
 		this.ws.send(JSON.stringify(data));
 	}
 	sendBad(num) {
-		this.sendData({bad: ceil(num/6 ** .3)});
+		this.sendData({bad: ceil(num/6 ** .5)});
 	}
 	sendX() {
 		this.sendData({x: mainBlob.x});

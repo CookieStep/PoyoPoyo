@@ -180,6 +180,7 @@ class Multiplayer {
 	async dropBad() {
 		if(!this.badCount) return;
 		var count = this.badCount;
+		this.badCount = 0;
 		var barriers = [];
 		while(count > 5) {
 			for(let i = 0; i < 6; i++) {

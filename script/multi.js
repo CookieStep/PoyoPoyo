@@ -86,13 +86,13 @@ class Multiplayer {
 			this.enemyGrid = new Grid;
 			this.enemyGrid.mainGrid = false;
 		}
-		if(place && grid) {
-			if(this.eneBlob) this.eneBlob.color = this.colors[place[1]];
-			else this.eneBlob = new Blob(this.colors[place[1]]);
-		}
-		if(x) {
-			this.eneBlob.x = x[1];
-		}
+		// if(place && grid) {
+		// 	if(this.eneBlob) this.eneBlob.color = this.colors[place[1]];
+		// 	else this.eneBlob = new Blob(this.colors[place[1]]);
+		// }
+		// if(x) {
+		// 	this.eneBlob.x = x[1];
+		// }
 		if(error) {
 			alert(error);
 		}

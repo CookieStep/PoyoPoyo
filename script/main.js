@@ -146,4 +146,6 @@ function resize() {
     }else{
         scale = 40;
     }
+	mainMenu.resize();
+	pauseMenu.resize();
 }

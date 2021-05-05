@@ -15,7 +15,6 @@ var keys = new function KeyMap() {
 function start() {
 	document.body.appendChild(canvas);
 	resize();
-	main();
 	update();
 }
 ctx.clear = () => {
@@ -32,13 +31,15 @@ addEventListener("keypress", ({code}) => {
 	if(code == "Equal") songs.forEach(song => song.volume(.1));
 });
 addEventListener("blur", () => {
-	main.run = false;
-	var listener = () => {
-		removeEventListener("focus", listener);
-		main.lastFrame = Date.now();
-		main.run = true;
-	};
-	addEventListener("focus", listener);
+	if(main.running) {
+		main.run = false;
+		var listener = () => {
+			removeEventListener("focus", listener);
+			main.lastFrame = Date.now();
+			main.run = true;
+		};
+		addEventListener("focus", listener);
+	}
 });
 addEventListener("resize", resize);
 addEventListener("load", start);

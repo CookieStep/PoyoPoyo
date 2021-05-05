@@ -83,7 +83,7 @@ class Multiplayer {
 		if(colors) {
 			Color.list = [];
 			blobs = new Set;
-			grid.array = [];
+			if(grid) grid.array = [];
 			this.colors = colors;
 			this.inGame = true;
 			this.enemyGrid = new Grid;

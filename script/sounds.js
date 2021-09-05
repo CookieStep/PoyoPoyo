@@ -5,6 +5,9 @@ function Sound(name) {
     sound.loop = true;
     soundH.loop = true;
 
+sound.volume = 0.25;
+soundH.volume = 0.25;
+
     var sounds = [sound, soundH];
 
     var pH = false;

@@ -1,5 +1,5 @@
 var keys = new function KeyMap() {
-	const keys = new Map;
+	var keys = new Map;
 	this.press = key => keys.has(key)?
 		keys.set(key, 3): keys.set(key, 1);
 	this.has = key => keys.has(key);
@@ -11,7 +11,7 @@ var keys = new function KeyMap() {
 	this.single = key => this.first(key) && this.use(key);
 	this.multi = key => this.shadow(key) && this.use(key);
 
-	this.clear = () => keys = new Map;
+	this.clear = () => (keys = new Map);
 };
 
 function start() {

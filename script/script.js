@@ -10,6 +10,8 @@ var keys = new function KeyMap() {
 	this.use = key => this.has(key) && keys.set(key, 2);
 	this.single = key => this.first(key) && this.use(key);
 	this.multi = key => this.shadow(key) && this.use(key);
+
+	this.clear = () => keys = new Map;
 };
 
 function start() {
@@ -30,16 +32,6 @@ addEventListener("keypress", ({code}) => {
 	if(code == "Slash") songs.forEach(song => song.volume(-.1));
 	if(code == "Equal") songs.forEach(song => song.volume(.1));
 });
-// addEventListener("blur", () => {
-// 	if(main.running) {
-// 		main.run = false;
-// 		var listener = () => {
-// 			removeEventListener("focus", listener);
-// 			main.lastFrame = Date.now();
-// 			main.run = true;
-// 		};
-// 		addEventListener("focus", listener);
-// 	}
-// });
+addEventListener("blur", keys.clear());
 addEventListener("resize", resize);
 addEventListener("load", start);

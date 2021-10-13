@@ -73,7 +73,7 @@ async function Inactive(drawAdd) {
 var infinite;
 function diffSpeed() {
 	if(infinite) {
-		return 1 + (gameTime ** 1.5)/400000;
+		return 1 + (gameTime ** 1.5)/4000000;
 	}else{
 		var speeds = [
 			1,

@@ -70,6 +70,7 @@ async function Inactive(drawAdd) {
 	var amount = gone.length;
 	return {amount, over, groups, colors};
 }
+var infinite;
 function diffSpeed() {
 	if(infinite) {
 		return 1 + (gameTime ** 1.5)/400000;

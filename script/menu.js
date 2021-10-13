@@ -119,8 +119,13 @@ var mainMenu = {
 			}
 		},
 		{
-			text: "Options",
-			color: "#5f5"
+			text: "Infinite",
+			color: "#5f5",
+			use() {
+				mainMenu.close();
+				infinite = true;
+				main();
+			}
 		}
 	],
 	run() {

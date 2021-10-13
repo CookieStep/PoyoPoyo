@@ -71,13 +71,17 @@ async function Inactive(drawAdd) {
 	return {amount, over, groups, colors};
 }
 function diffSpeed() {
-	var speeds = [
-		1,
-		1.2,
-		1.5,
-		2
-	];
-	return speeds[diff];
+	if(infinite) {
+		return 1 + (gameTime ** 1.5)/400000;
+	}else{
+		var speeds = [
+			1,
+			1.2,
+			1.5,
+			2
+		];
+		return speeds[diff];
+	}
 }
 function music() {
 	if(!multiplayer) {
@@ -105,8 +109,6 @@ function music() {
 		}else if(song.H && blobs.size < 35) {
 			song.switch(false)
 		}
-	}else{
-
 	}
 }
 var drawBlob = function() {

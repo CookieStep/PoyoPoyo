@@ -156,7 +156,7 @@ function drawBlobs(a=0) {
 	ctx.fillText(`${frameRate}ms`, x, innerHeight - h/2);
 	ctx.fillText(`${round(10000/frameRate)/10}fps`, x, innerHeight - h * 3/2);
 	if(infinite) {
-		ctx.fillText(`Speed: ${diffSpeed()}`, x, innerHeight - h * 5/2);
+		ctx.fillText(`Speed: ${Math.round(diffSpeed() * 100)/100}`, x, innerHeight - h * 5/2);
 	}else{
 		ctx.fillText(`Level ${diff + 1}`, x, innerHeight - h * 5/2);
 	}
